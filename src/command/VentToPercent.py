@@ -2,13 +2,15 @@ from .BaseCommand import BaseCommand
 from subsystem.Vent import Vent 
 
 class VentToPercent(BaseCommand):
-	vent = Vent(2, 4, 30)
+	vent = Vent("Roof vent", 2, 4, 30)
 
 	def setTarget(self, target):
 		self.target_pct = target
 
 	def execute(self):
-		# holy shit this is bad... fix when not high
+		self.vent.printStatus()
+		# There should probably be some ramping here but that'll
+		# depend entirely on the controller.`
 		if (self.vent.getPercent() < self.target_pct):
 			self.vent.setOpen()
 		else:

@@ -5,11 +5,13 @@ import time
 
 class Vent:
 	# why do I do this? C habit?
+	name = ""
 	openPin = -1
 	closePin = -1
 	curr_pct = 0
 
-	def __init__(self, openPin, closePin, stroke):
+	def __init__(self, name, openPin, closePin, stroke):
+		self.name = name
 		self.openPin = openPin
 		self.closePin = closePin
 		self.curr_pct = 0
@@ -20,12 +22,21 @@ class Vent:
 		self.startRuntime = 0
 
 	def printConfig(self):
+		print("name:", self.name)
 		print("openPin:", self.openPin)
 		print("closePin:", self.closePin)
-		print("curr_pct:", self.curr_pct)
+		print("Percent Open:", self.getPercent())
+
+	def printStatus(self):
+		print(self.name + " percent open:", self.getPercent())
 
 	def setClose(self):
-		print("Closing vents. Currently at: " + str(self.getPercent()))
+		# if we're already at -1 and want to go to -1 again then we want to
+		# make sure we're really shut so reset back to 0 and let it close
+		# for a bit.
+		if (self.curr_pct < 0):
+			self.curr_pct = 0
+
 		if (self.isClosing == False):
 			self.startRuntime = time.time()
 			self.isClosing = True
@@ -33,7 +44,12 @@ class Vent:
 		pass
 
 	def setOpen(self):
-		print("Opening vents. Currently at: " + str(self.getPercent()))
+		# if we're already at 101 and want to go to 101 again then we want to
+		# make sure we're really open so reset back to 100 and let it open
+		# for a bit.
+		if (self.curr_pct > 100):
+			self.curr_pct = 100 
+
 		if (self.isOpening == False):
 			self.startRuntime = time.time()
 			self.isOpening = True
@@ -43,7 +59,6 @@ class Vent:
 	def getPercent(self):
 		now = time.time()
 		delta = now - self.startRuntime
-		print("seconds runtime: " + str(delta))
 		frac = (delta / self.stroke) 
 		new_pct = self.curr_pct
 

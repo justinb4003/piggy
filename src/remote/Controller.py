@@ -15,8 +15,8 @@ def shutdown():
 
 def listenForCommand():
 	data, addr = sock.recvfrom(1024)
-	print("msg received:", data)
-	return data
+	print("msg received:", data, "from:", addr)
+	return data.decode("utf-8")
 	
 	
 
