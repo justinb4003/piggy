@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# I'm a dork and like to see project line counts.
+find ./ -name "*.py" | xargs -i"{}" wc -l {} | awk '{s+=$1} END {print s}'
