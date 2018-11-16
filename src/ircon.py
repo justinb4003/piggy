@@ -2,13 +2,19 @@
 
 print('starting')
 
+DB_HOST = "localhost"
+DB_USER = "root"
+DB_PASS = "nothing"
+DB_SCHM = "ircon"
+
+import pymysql
+
 from threading import Thread
 import time
 
-from command.DriveToPoint import DriveToPoint
-from command.WaterOn import WaterOn
 from command.VentToPercent import VentToPercent
 
+import db.EqFetch as eqfetch
 import schedule.Scheduler as shd
 import remote.Controller as rmc
 
@@ -26,13 +32,14 @@ def controller_loop():
 		raw_command = rmc.listenForCommand()
 		print("got command:",  str(raw_command))
 
-dtp = DriveToPoint()
-won = WaterOn()
+
+eqfetch.load_all()
+ventRetail = eqfetch.get("vent", "RETROOF")
+
 vt25 = VentToPercent()
+vt25.setVent(ventRetail)
 vt25.setTarget(25)
 
-shd.addSequential(dtp)
-shd.addSequential(won)
 shd.addSequential(vt25)
 
 shd.printActiveCommands()
@@ -43,6 +50,7 @@ sThread.start()
 time.sleep(20)
 
 vt50 = VentToPercent()
+vt50.setVent(ventRetail)
 vt50.setTarget(-1)
 shd.addSequential(vt50)
 
