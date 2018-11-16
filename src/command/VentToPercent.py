@@ -4,10 +4,10 @@ from subsystem.Vent import Vent
 class VentToPercent(BaseCommand):
 	#vent = Vent("Roof vent", 2, 4, 30)
 
-	def setVent(self, vent):
+	def set_vent(self, vent):
 		self.vent = vent
 
-	def setTarget(self, target):
+	def set_target(self, target):
 		self.target_pct = target
 
 	def execute(self):
@@ -18,7 +18,7 @@ class VentToPercent(BaseCommand):
 		else:
 			self.vent.set_close()
 
-	def isFinished(self):
+	def is_finished(self):
 		if ( abs(self.vent.get_percent() - self.target_pct) < 0.5 ):
 			return True
 		return False

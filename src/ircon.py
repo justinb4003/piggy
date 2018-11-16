@@ -13,6 +13,7 @@ from threading import Thread
 import time
 
 from command.VentToPercent import VentToPercent
+from command.DriveToPoint import DriveToPoint 
 
 import db.EqFetch as eqfetch
 import schedule.Scheduler as shd
@@ -37,27 +38,27 @@ eqfetch.load_all()
 ventRetail = eqfetch.get("vent", "RETROOF")
 
 vt25 = VentToPercent()
-vt25.setVent(ventRetail)
-vt25.setTarget(25)
+vt25.set_vent(ventRetail)
+vt25.set_target(25)
 
-shd.addSequential(vt25)
+shd.add_sequential(vt25)
 
-shd.printActiveCommands()
+shd.print_active_commands()
 
 sThread = Thread(target=scheduler_loop)
 sThread.start()
 
-time.sleep(20)
+#time.sleep(20)
 
 vt50 = VentToPercent()
-vt50.setVent(ventRetail)
-vt50.setTarget(-1)
-shd.addSequential(vt50)
+vt50.set_vent(ventRetail)
+vt50.set_target(-1)
+shd.add_sequential(vt50)
 
 cThread = Thread(target=controller_loop)
 cThread.start()
 
-time.sleep(2.00)
+#time.sleep(2.00)
 
 dtp = DriveToPoint()
-#shd.addSequential(dtp)
+#shd.add_sequential(dtp)

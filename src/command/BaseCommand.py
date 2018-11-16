@@ -9,7 +9,7 @@ class BaseCommand(ABC):
 		pass
 
 	@abstractmethod
-	def isFinished(self):
+	def is_finished(self):
 		pass
 
 	@abstractmethod

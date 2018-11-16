@@ -1,42 +1,42 @@
-seqCommandList = []
-immediateCommandList = []
+seq_command_list = []
+immediate_command_list = []
 
-def printActiveCommands():
+def print_active_commands():
 	print('seq active command list:')
-	for c in seqCommandList:
+	for c in seq_command_list:
 		print(type(c))
 
 	print('immediate active command list:')
-	for c in immediateCommandList:
+	for c in immediate_command_list:
 		print(type(c))
 
 
-def addSequential(cmd):
-	seqCommandList.append(cmd)
+def add_sequential(cmd):
+	seq_command_list.append(cmd)
 
 
-def addImmediate(cmd):
-	immediateCommandList.append(cmd)
+def add_immediate(cmd):
+	immediate_command_list.append(cmd)
 
 
 def execute():
 	cmdExCount = 0
 
-	for c in immediateCommandList:
+	for c in immediate_command_list:
 		cmdExCount += 1
 		print(type(c))
 		c.execute()
 		if c.isFinished():
 			c.end()
-			immediateCommandList.remove(c)
+			immediate_command_list.remove(c)
 
-	if  len(seqCommandList) > 0:
+	if  len(seq_command_list) > 0:
 		cmdExCount += 1
-		c = seqCommandList[0];
+		c = seq_command_list[0];
 		c.execute()
-		if c.isFinished():
+		if c.is_finished():
 			c.end()
-			seqCommandList.remove(c)
+			seq_command_list.remove(c)
 
 	if cmdExCount == 0:
 		pass

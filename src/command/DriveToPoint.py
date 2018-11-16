@@ -12,7 +12,7 @@ class DriveToPoint(BaseCommand):
 		if self.counter > 5:
 			self.is_finished = True
 
-	def isFinished(self):
+	def is_finished(self):
 		return self.is_finished
 
 	def end(self):
