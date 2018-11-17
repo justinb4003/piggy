@@ -8,6 +8,8 @@ class Heater(BaseSubsystem):
 		self.short_name = short_name
 		self.on_pin = on_pin
 		self.is_on = False
+		self.on_offset = -2
+		self.off_offset = 0
 
 	def print_config(self):
 		print("long_name:", self.long_name)
@@ -22,3 +24,13 @@ class Heater(BaseSubsystem):
 		if self.is_on == False:
 			lbl = "OFF"
 		return(self.short_name + " is " + lbl)
+
+	def set_on(self):
+		self.is_on = True
+		# do the io
+		pass
+
+	def set_off(self):
+		self.is_on = False
+		# do the io
+		pass
