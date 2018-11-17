@@ -17,7 +17,7 @@ class Humidity(BaseSubsystem):
 		print(self.get_status())
 
 	def get_status(self):
-		return(self.short_name + " currently :", round(self.get_rh(), 1))
+		return(self.short_name + " currently: " + str(round(self.get_rh(), 1)))
 
 	def get_rh(self):
 		return 30

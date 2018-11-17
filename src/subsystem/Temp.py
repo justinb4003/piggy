@@ -17,7 +17,7 @@ class Temp(BaseSubsystem):
 		print(self.get_status())
 
 	def get_status(self):
-		return(self.short_name + " currently :", round(self.get_temp(), 1))
+		return(self.short_name + " currently: " + str(round(self.get_temp(), 1)))
 
 	def get_temp(self):
 		return 72.0
