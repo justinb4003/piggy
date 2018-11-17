@@ -19,7 +19,7 @@ class VentToPercent(BaseCommand):
 			self.vent.set_close()
 
 	def is_finished(self):
-		if ( abs(self.vent.get_percent() - self.target_pct) < 0.5 ):
+		if ( abs(self.vent.get_percent() - self.target_pct) < 0.20 ):
 			return True
 		return False
 

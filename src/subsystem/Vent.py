@@ -28,7 +28,7 @@ class Vent(BaseSubsystem):
 		print(self.get_status())
 
 	def get_status(self):
-		return(self.short_name + " percent open:", self.get_percent())
+		return(self.short_name + " percent open:", round(self.get_percent(), 1))
 
 	def set_close(self):
 		if (self.is_closing == False):
