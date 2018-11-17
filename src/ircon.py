@@ -18,6 +18,7 @@ from command.DriveToPoint import DriveToPoint
 import db.EqFetch as eqfetch
 import schedule.Scheduler as shd
 import remote.Controller as rmc
+import monitor.Monitor as mon
 
 def scheduler_loop():
 	while True:
@@ -34,29 +35,38 @@ def controller_loop():
 		print("got command:",  str(raw_command))
 
 
+def monitor_loop():
+	"""Something that runs constantly updating a display or maybe more.  Not sure yet"""
+	while True:
+		mon.execute()
+		time.sleep(1.0)
+
+def start_threads():
+	scheduler_thread = Thread(target=scheduler_loop)
+	scheduler_thread.start()
+
+	controller_thread = Thread(target=controller_loop)
+	controller_thread.start()
+
+	monitor_thread = Thread(target=monitor_loop)
+	monitor_thread.start()
+
+
 eqfetch.load_all()
 ventRetail = eqfetch.get("vent", "RETROOF")
 
+start_threads()
+
+
 vt25 = VentToPercent()
 vt25.set_vent(ventRetail)
-vt25.set_target(25)
-
+vt25.set_target(12)
 shd.add_sequential(vt25)
-
-shd.print_active_commands()
-
-sThread = Thread(target=scheduler_loop)
-sThread.start()
-
-#time.sleep(20)
 
 vt50 = VentToPercent()
 vt50.set_vent(ventRetail)
 vt50.set_target(-1)
 shd.add_sequential(vt50)
-
-cThread = Thread(target=controller_loop)
-cThread.start()
 
 #time.sleep(2.00)
 
