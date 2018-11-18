@@ -39,7 +39,7 @@ def monitor_loop():
 	"""Something that runs constantly updating a display or maybe more.  Not sure yet"""
 	while True:
 		mon.execute()
-		time.sleep(1.0)
+		time.sleep(5.0)
 
 def start_threads():
 	scheduler_thread = Thread(target=scheduler_loop)
@@ -53,22 +53,4 @@ def start_threads():
 
 
 eqfetch.load_all()
-ventRetail = eqfetch.get("vent", "RETROOF")
-
 start_threads()
-
-
-vt25 = VentToPercent()
-vt25.set_vent(ventRetail)
-vt25.set_target(12)
-shd.add_sequential(vt25)
-
-vt50 = VentToPercent()
-vt50.set_vent(ventRetail)
-vt50.set_target(-1)
-shd.add_sequential(vt50)
-
-#time.sleep(2.00)
-
-dtp = DriveToPoint()
-#shd.add_sequential(dtp)

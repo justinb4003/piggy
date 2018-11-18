@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+import json
+import requests
+
 from .BaseSubsystem import BaseSubsystem
 
 class Temp(BaseSubsystem):
@@ -19,5 +22,11 @@ class Temp(BaseSubsystem):
 	def get_status(self):
 		return(self.short_name + " currently: " + str(round(self.get_temp(), 1)))
 
+	# TODO: This needs some serious error handling.
+	# Break it out into some shared function.
 	def get_temp(self):
-		return 72.0
+		#print("getting temp from url: " + self.io_uri)
+		r = requests.get(self.io_uri)
+		data = json.loads(r.content)
+		#print("return data: " + str(data))
+		return data['temp'] 

@@ -7,7 +7,7 @@ class Heating(BaseTask):
 	heat1 = eqfetch.get_heater("HEAT01")
 	heat2 = eqfetch.get_heater("HEAT02")
 
-	setpoint = 80
+	setpoint = 72
 
 	def take_action(self):
 		return self.action(True)
@@ -19,7 +19,9 @@ class Heating(BaseTask):
 		ret_val = False
 		temp = self.temp_sensor.get_temp()
 		offset = temp - self.setpoint
+		print("HEATING________")
 		print("temp: " + str(temp))
+		print("setpoint: " + str(self.setpoint))
 		print("offset: " + str(offset))
 		print("heat1 on offset: " + str(self.heat1.on_offset))
 		print("heat1 off offset: " + str(self.heat1.off_offset))

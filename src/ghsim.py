@@ -63,6 +63,8 @@ class GHSimWindow(Gtk.ApplicationWindow):
 		self.set_border_width(5)
 
 		temp_adj = Gtk.Adjustment(72, -20, 120, 1, 1, 1)
+		humidity_adj = Gtk.Adjustment(30, 0, 100, 1, 1, 1)
+
 		self.temp_scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL,
 									adjustment=temp_adj)
 		self.temp_scale.set_digits(1)
@@ -72,11 +74,24 @@ class GHSimWindow(Gtk.ApplicationWindow):
 
 		self.temp_label = Gtk.Label()
 		self.temp_label.set_text("Set Temp...")
+
+		self.humidity_scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL,
+									adjustment=humidity_adj)
+		self.humidity_scale.set_digits(1)
+		self.humidity_scale.set_hexpand(True)
+		self.humidity_scale.set_valign(Gtk.Align.START)
+		self.humidity_scale.connect("value-changed", self.humidity_scale_moved)
+
+		self.humidity_label = Gtk.Label()
+		self.humidity_label.set_text("Set Humidity...")
+		
 		
 		grid = Gtk.Grid()
 		grid.set_column_spacing(10)
 		grid.attach(self.temp_label, 0, 0, 1, 1)
 		grid.attach(self.temp_scale, 0, 1, 1, 1)
+		grid.attach(self.humidity_label, 0, 2, 1, 1)
+		grid.attach(self.humidity_scale, 0, 3, 1, 1)
 
 		self.add(grid)
 
@@ -84,6 +99,11 @@ class GHSimWindow(Gtk.ApplicationWindow):
 		global current_temp
 		current_temp =  self.temp_scale.get_value()
 		print("current_temp:" + str(current_temp))
+
+	def humidity_scale_moved(self, event):
+		global current_rh
+		current_rh =  self.humidity_scale.get_value()
+		print("current_humidity:" + str(current_rh))
 
 
 class GHSimApplication(Gtk.Application):

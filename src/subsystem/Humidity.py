@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+import json
+import requests
+
 from .BaseSubsystem import BaseSubsystem
 
 class Humidity(BaseSubsystem):
@@ -20,4 +23,8 @@ class Humidity(BaseSubsystem):
 		return(self.short_name + " currently: " + str(round(self.get_rh(), 1)))
 
 	def get_rh(self):
-		return 30
+		#print("getting humidity from url: " + self.io_uri)
+		r = requests.get(self.io_uri)
+		data = json.loads(r.content)
+		#print("return data: " + str(data))
+		return data['humidity'] 

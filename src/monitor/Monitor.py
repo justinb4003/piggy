@@ -1,10 +1,11 @@
 import db.EqFetch as eqfetch
 
 from task.Heating import Heating 
+from task.Cooling import Cooling
 
 def execute():
 	for id, vent in eqfetch.get_vents().items():
-		#vent.print_status()
+		vent.print_status()
 		pass
 
 	for id, heater in eqfetch.get_heaters().items():
@@ -22,4 +23,11 @@ def execute():
 	else:
 		print("Heating taking action.")
 		heating.take_action()
+
+	cooling = Cooling()
+	if cooling.want_action() == False:
+		print("Cooling makes no call.")
+	else:
+		print("Cooling taking action.")
+		cooling.take_action()
 

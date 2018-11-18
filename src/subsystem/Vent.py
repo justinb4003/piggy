@@ -5,18 +5,23 @@ import time
 from .BaseSubsystem import BaseSubsystem
 
 class Vent(BaseSubsystem):
-	def __init__(self, long_name, short_name, open_pin, close_pin, stroke):
+	def __init__(self, long_name, short_name, open_pin, close_pin, stroke, on_offset, off_offset, crack, step):
 		self.long_name = long_name
 		self.short_name = short_name
 		self.open_pin = open_pin
 		self.close_pin = close_pin
 		self.curr_pct = 0
 		self.stroke = stroke
+		self.on_offset = on_offset
+		self.off_offset = off_offset
+		self.crack = crack
+		self.step = step
 		print("init stroke: " + str(stroke))
 
 		self.is_closing = False
 		self.is_opening = False
 		self.start_runtime = 0
+		self.last_moved_at = 0
 
 	def print_config(self):
 		print("name:", self.name)
@@ -72,6 +77,13 @@ class Vent(BaseSubsystem):
 		self.is_closing = False
 		self.is_opening = False
 		self.start_runtime = 0
+		self.last_moved_at = time.time()
 		# do the actual io
 		pass
+
+
+	def can_move(self):
+		# Internal rules to see if the vent can move.
+		# for now it's just the timeout.  30 seconds between movements.
+		return (time.time() - self.last_moved_at >= 30)
 

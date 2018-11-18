@@ -76,7 +76,7 @@ def get_vent(id):
 				   row[1],
 				   row[2],
 				   row[3],
-				   row[4])	
+				   row[4], 0, -3, 12, 10)	
 
 	vents[id] = res
 	return res
