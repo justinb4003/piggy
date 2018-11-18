@@ -118,7 +118,7 @@ def get_humidity(id):
 						  "WHERE short_name = '%s'" % id) 
 	for row in results:
 		print("full = %s and short = %s" % ( row[0], row[1] ) )
-		res = Temp(row[0], row[1], row[2])	
+		res = Humidity(row[0], row[1], row[2])	
 
 	humiditys[id] = res
 	return res
