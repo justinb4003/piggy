@@ -22,16 +22,16 @@ class RESTHTTPRequestHandler(BaseHTTPRequestHandler):
 		data['humiditys'] = {}
 
 		for id, vent in eqfetch.get_vents().items():
-			data['vents'][id] = vent.__dict__
+			data['vents'][id] = vent.to_json()
 
 		for id, heater in eqfetch.get_heaters().items():
-			data['heaters'][id] = heater.__dict__
+			data['heaters'][id] = heater.to_json()
 
 		for id, temp in eqfetch.get_temps().items():
-			data['temps'][id] = temp.__dict__
+			data['temps'][id] = temp.to_json()
 
 		for id, humidity in eqfetch.get_humiditys().items():
-			data['humiditys'][id] = humidity.__dict__
+			data['humiditys'][id] = humidity.to_json()
 
 		self.wfile.write(bytes(json.dumps(data, sort_keys=True, indent=4), 'utf-8'))
 

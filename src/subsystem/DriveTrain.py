@@ -5,6 +5,9 @@ class DriveTrain:
 	def __init__(self, outpin):
 		self.outpin = outpin
 
+	def to_json(self):
+		pass	
+
 	def printConfig(self):
 		print("outpin:", self.outpin)
 

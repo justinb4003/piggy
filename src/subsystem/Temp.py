@@ -16,6 +16,11 @@ class Temp(BaseSubsystem):
 		print("short name:", self.short_name)
 		print("io_uri:", self.io_uri)
 
+	def to_json(self):
+		data = {}
+		data['long_name'] = self.long_name
+		data['current_temp'] = self.get_temp()
+
 	def print_status(self):
 		print(self.get_status())
 

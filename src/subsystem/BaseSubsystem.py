@@ -5,6 +5,10 @@ class BaseSubsystem(ABC):
 		pass
 
 	@abstractmethod
+	def to_json(self):
+		pass
+
+	@abstractmethod
 	def get_status(self):
 		pass
 

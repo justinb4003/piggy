@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import json
 # Ugh... gotta make sure I keep this all DT safe and what not.  
 import time
 from .BaseSubsystem import BaseSubsystem
@@ -28,6 +29,18 @@ class Vent(BaseSubsystem):
 		print("openPin:", self.open_pin)
 		print("closePin:", self.close_pin)
 		print("Percent Open:", self.get_percent())
+
+	def to_json(self):
+		data = {}
+		data['long_name'] = self.long_name
+		data['current_percent'] = self.get_percent()
+		data['is_closing'] = self.is_closing
+		data['is_opening'] = self.is_opening
+		data['on_offset'] = self.on_offset
+		data['off_offset'] = self.off_offset
+		data['crack'] = self.crack
+		data['step'] = self.step
+		return data
 
 	def print_status(self):
 		print(self.get_status())
@@ -85,5 +98,9 @@ class Vent(BaseSubsystem):
 	def can_move(self):
 		# Internal rules to see if the vent can move.
 		# for now it's just the timeout.  30 seconds between movements.
-		return (time.time() - self.last_moved_at >= 30)
+		return (self.is_closing == False
+				and
+				self.is_opening == False
+				and
+				time.time() - self.last_moved_at >= 30)
 

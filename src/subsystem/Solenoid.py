@@ -2,6 +2,7 @@
 
 from .BaseSubsystem import BaseSubsystem
 
+# TODO: Wow this needs to be brought up to speed w/ new development.
 class Solenoid(BaseSubsystem):
 	open_status = False
 	outpin = -1
@@ -20,6 +21,11 @@ class Solenoid(BaseSubsystem):
 	def set_off(self):
 		self.open_status = False
 		self.setStatus()
+
+	def to_json(self):
+		data = {}
+		data['open_status'] = self.long_name
+		return data
 
 	def get_status(self):
 		return self.open_status

@@ -16,6 +16,14 @@ class Heater(BaseSubsystem):
 		print("short_name:", self.short_name)
 		print("on_pin:", self.on_pin)
 
+	def to_json(self):
+		data = {}
+		data['long_name'] = self.long_name
+		data['is_on'] = self.is_on
+		data['on_offset'] = self.on_offset
+		data['off_offset'] = self.off_offset
+		return data
+
 	def print_status(self):
 		print(self.get_status())
 

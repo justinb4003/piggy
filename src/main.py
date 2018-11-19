@@ -15,7 +15,10 @@ import time
 from command.VentToPercent import VentToPercent
 from command.DriveToPoint import DriveToPoint 
 
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
 import db.EqFetch as eqfetch
+import rest.RestServer as rs
 import schedule.Scheduler as shd
 import remote.Controller as rmc
 import monitor.Monitor as mon
@@ -41,6 +44,10 @@ def monitor_loop():
 		mon.execute()
 		time.sleep(5.0)
 
+def rest_loop():
+	"""Loop to start up a REST server that kicks back JSON status data"""
+	rs.serve_forever()
+
 def start_threads():
 	scheduler_thread = Thread(target=scheduler_loop)
 	scheduler_thread.start()
@@ -50,6 +57,9 @@ def start_threads():
 
 	monitor_thread = Thread(target=monitor_loop)
 	monitor_thread.start()
+
+	rest_thread = Thread(target=rest_loop)
+	rest_thread.start()
 
 
 eqfetch.load_all()
