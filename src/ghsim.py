@@ -37,6 +37,9 @@ def main_quit():
 	server_thread.stop()
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
+	def log_message(self, *args):
+		pass # ignore logging anything to the screen for hits.
+
 	def do_GET(self):
 		self.send_response(200)
 		self.end_headers()
