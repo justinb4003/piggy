@@ -1,6 +1,6 @@
 import db.EqFetch as eqfetch
 
-from task.Heating import Heating 
+from task.Heating import Heating
 from task.Cooling import Cooling
 
 def execute():

@@ -12,3 +12,7 @@ class BaseTask(ABC):
 	@abstractmethod
 	def want_action(self):
 		pass
+
+	@abstractmethod
+	def export_dict(self):
+		pass
