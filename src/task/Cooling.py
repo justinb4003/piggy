@@ -15,12 +15,23 @@ class Cooling(BaseTask):
     step = 3
     on_offset = 3
     off_offset = 0
+    priority = 0
+
+    def __init__(self, name, priority):
+        self.name = name
+        self.priority = priority
 
     def take_action(self):
         return self._action(True)
 
     def want_action(self):
         return self._action(False)
+
+    def get_priority(self):
+        return self.priority
+
+    def set_priority(self, val):
+        self.priority = val
 
     def export_dict(self):
         d = {}
@@ -30,6 +41,12 @@ class Cooling(BaseTask):
         d['crack'] = self.crack
         d['step]'] = self.step
         return d
+
+    def export_json_config(self):
+        pass
+
+    def import_json_config(self):
+        pass
 
     def _action(self, doit):
         ret_val = False
