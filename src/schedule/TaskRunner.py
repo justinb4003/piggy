@@ -30,8 +30,8 @@ def load_tasks():
         task_list.clear()
         task = create_obj("Heating")('Basic Heating', 1)
         task_list.append(task)
-        task = create_obj("Cooling")('Basic Cooling', 8)
-        task_list.append(task)
+        task2 = create_obj("Cooling")('Basic Cooling', 8)
+        task_list.append(task2)
         pass
     pass
 
@@ -44,6 +44,7 @@ def execute():
     something like 30-60 seconds.
     """
     with task_lock:
-        print("printing task list from task scheduler:")
-        print(task_list)
+        for task in task_list:
+            want = task.want_action()
+            print("Does {} want to run? {}".format(task.name, want))
     pass

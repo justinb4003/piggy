@@ -31,9 +31,12 @@ class Heating(BaseTask):
 
     def export_dict(self):
         d = {}
+        d['name'] = self.name
+        d['type'] = type(self).__name__
         d['setpoint'] = self.setpoint
         d['on_offset'] = self.on_offset
         d['off_offset'] = self.off_offset
+        d['want_action'] = self.want_action()
         return d
 
     def export_json_config(self):

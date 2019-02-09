@@ -35,11 +35,14 @@ class Cooling(BaseTask):
 
     def export_dict(self):
         d = {}
+        d['name'] = self.name
+        d['type'] = type(self).__name__
         d['setpoint'] = self.setpoint
         d['on_offset'] = self.on_offset
         d['off_offset'] = self.off_offset
         d['crack'] = self.crack
         d['step]'] = self.step
+        d['want_action'] = self.want_action()
         return d
 
     def export_json_config(self):
@@ -51,26 +54,59 @@ class Cooling(BaseTask):
     def _action(self, doit):
         ret_val = False
         temp = self.temp_sensor.get_temp()
-        offset = temp - self.setpoint
+        temp_on = self.setpoint + self.on_offset
+        temp_off = self.setpoint + self.off_offset
         print("COOLING________")
-        print("temp: " + str(temp))
         print("setpoint: " + str(self.setpoint))
-        print("offset: " + str(offset))
         print("on offset: " + str(self.on_offset))
         print("off offset: " + str(self.off_offset))
+        print("temp: " + str(temp))
+        print("temp_on:" + str(temp_on))
+        print("temp_off:" + str(temp_off))
         print("vent1 is currently: " + str(self.vent1.get_percent()))
 
-        if offset < self.on_offset and self.vent1.can_move():
-            ret_val = True  # we want to move!
-            if self.vent1.get_percent() == 0.00:
-                new_percent = self.crack
-            else:
-                new_percent = self.vent1.get_percent() + self.step
+        vent_is_open = False
+        if (self.vent1.get_percent() >= 0.00):
+            vent_is_open = True
 
+        if temp <= temp_off:
+            print("temp <= temp_off")
+            # If we're below the off temp for cooling then we try and move
+            # the vents to -1.00% anyway.
+            ret_val = True
             if doit:
-                print("Setting vent to: {0:0.0f}".format(new_percent))
                 vtp = VentToPercent()
                 vtp.set_vent(self.vent1)
-                vtp.set_target(new_percent)
+                vtp.set_target(-1.00)
                 shd.add_sequential(vtp)
+            return  # Nothing else gets evaluated.  Vents are slamming closed.
+
+        if temp >= temp_on and vent_is_open is False:
+            print("temp >= temp_on and vent_is_open is False")
+            # we're just opening the vents from a closed position.
+            ret_val = True
+            if doit:
+                vtp = VentToPercent()
+                vtp.set_vent(self.ven1)
+                vtp.set_target(self.crack)
+                shd.add_sequential(vtp)
+
+        if vent_is_open and temp > self.setpoint:
+            print("vent_is_open and temp > self.setpoint")
+            ret_val = True
+            if doit:
+                vtp = VentToPercent()
+                vtp.set_vent(self.vent1)
+                vtp.set_target(self.vent1.get_percent() + self.step)
+                shd.add_sequential(vtp)
+
+        if vent_is_open and temp < self.setpoint:
+            print("vent_is_open and temp < self.setpoint")
+            ret_val = True
+            if doit:
+                vtp = VentToPercent()
+                vtp.set_vent(self.vent1)
+                vtp.set_target(self.vent1.get_percent() - self.step)
+                shd.add_sequential(vtp)
+
         return ret_val

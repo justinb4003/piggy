@@ -74,8 +74,8 @@ class Vent(BaseSubsystem):
         # fix percent if it's over a limit
         if self.curr_pct < 0:
             self.curr_pct = 0
-            if self.curr_pct > 100:
-                self.curr_pct = 100
+        if self.curr_pct > 100:
+            self.curr_pct = 100
 
         print("STOPPING VENTS!")
         if (self.is_closing and self.is_opening):

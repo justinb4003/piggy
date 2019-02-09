@@ -3,6 +3,7 @@
 import json
 import db.EqFetch as eqfetch
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from schedule.TaskRunner import task_list
 
 
 class RESTHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -33,6 +34,11 @@ class RESTHTTPRequestHandler(BaseHTTPRequestHandler):
 
         for id, humidity in eqfetch.get_humiditys().items():
             _eq['humiditys'][id] = humidity.export_dict()
+
+        data['running_tasks'] = {}
+        _rt = data['running_tasks']
+        for task in task_list:
+            _rt[task.name] = task.export_dict()
 
         self.wfile.write(bytes(json.dumps(data,
                                           sort_keys=True,
