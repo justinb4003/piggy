@@ -33,7 +33,10 @@ class Temp(BaseSubsystem):
     # Break it out into some shared function.
     def get_temp(self):
         # print("getting temp from url: " + self.io_uri)
-        r = requests.get(self.io_uri)
-        data = json.loads(r.content.decode('utf-8'))
-        # print("return data: " + str(data))
-        return data['temp']
+        try:
+            r = requests.get(self.io_uri)
+            data = json.loads(r.content.decode('utf-8'))
+            # print("return data: " + str(data))
+            return data['temp']
+        except requests.exceptions.ConnectionError:
+            return None

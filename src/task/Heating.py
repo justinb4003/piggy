@@ -6,11 +6,9 @@ class Heating(BaseTask):
 
     temp_sensor = eqfetch.get_temp("TEMP01")
     heat1 = eqfetch.get_heater("HEAT01")
-    heat2 = eqfetch.get_heater("HEAT02")
 
-    setpoint = 72
-    on_offset = -4
-    off_offset = 0
+    on_at = 68
+    off_at = 72
     priority = 1
 
     def __init__(self, name, priority):
@@ -33,9 +31,8 @@ class Heating(BaseTask):
         d = {}
         d['name'] = self.name
         d['type'] = type(self).__name__
-        d['setpoint'] = self.setpoint
-        d['on_offset'] = self.on_offset
-        d['off_offset'] = self.off_offset
+        d['on_at'] = self.on_at
+        d['off_at'] = self.off_at
         d['want_action'] = self.want_action()
         return d
 
@@ -48,21 +45,29 @@ class Heating(BaseTask):
     def _action(self, doit):
         ret_val = False
         temp = self.temp_sensor.get_temp()
-        offset = temp - self.setpoint
-        print("HEATING________")
+        # Some ugly debug code below
+        print("HEATING task for {} using {} is:".format("HEAT01", "TEMP01"))
+        print("... on at {} off at {} "
+              "currently {} deg status: {}".format(self.on_at,
+                                                   self.off_at,
+                                                   temp, self.heat1.is_on))
+        """
         print("temp: " + str(temp))
-        print("setpoint: " + str(self.setpoint))
-        print("offset: " + str(offset))
-        print("heat1 on offset: " + str(self.heat1.on_offset))
-        print("heat1 off offset: " + str(self.heat1.off_offset))
+        print("heat1 on at: " + str(self.on_at))
+        print("heat1 off at: " + str(self.off_at))
         print("heat1 is currently: " + str(self.heat1.is_on))
+        """
 
-        if (self.heat1.on_offset >= offset and self.heat1.is_on is False):
+        if (temp <= self.on_at):
+            print("We want to turn heat on.")
             ret_val = True
             if doit:
+                print("And we're trying to turn it on now.")
                 self.heat1.set_on()
-        if (self.heat1.off_offset <= offset and self.heat1.is_on is True):
+        if (temp >= self.off_at):
+            print("We want to turn heat off.")
             ret_val = True
             if doit:
+                print("And we're trying to turn it off now.")
                 self.heat1.set_off()
         return ret_val

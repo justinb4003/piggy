@@ -30,10 +30,10 @@ def load_tasks():
         task_list.clear()
         task = create_obj("Heating")('Basic Heating', 1)
         task_list.append(task)
+        """
         task2 = create_obj("Cooling")('Basic Cooling', 8)
         task_list.append(task2)
-        pass
-    pass
+        """
 
 
 def execute():
@@ -45,6 +45,10 @@ def execute():
     """
     with task_lock:
         for task in task_list:
-            want = task.want_action()
-            print("Does {} want to run? {}".format(task.name, want))
+            # want = task.want_action()
+            # print("Does {} want to run? {}".format(task.name, want))
+            # TODO: Resolve conflicts between tasks that wants to utilize
+            # the same equipment at the same time.
+            # For now we'll just let every action do it's thing immediately
+            task.take_action()
     pass

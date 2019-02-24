@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from .BaseSubsystem import BaseSubsystem
 
 
@@ -32,7 +30,7 @@ class Heater(BaseSubsystem):
         lbl = "ON"
         if self.is_on is False:
             lbl = "OFF"
-            return(self.short_name + " is " + lbl)
+        return(self.short_name + " is " + lbl)
 
     def set_on(self):
         self.is_on = True
