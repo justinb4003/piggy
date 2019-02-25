@@ -4,13 +4,13 @@ import pymysql
 
 from subsystem.Vent import Vent
 from subsystem.Temp import Temp
-from subsystem.Humidity import Humidity
+from subsystem.RHSensor import RHSensor
 from subsystem.Heater import Heater
 
 vents = {}
 heaters = {}
 temps = {}
-humiditys = {}
+rh_sensors = {}
 
 
 def execute_sql(sql):
@@ -41,11 +41,11 @@ def load_all():
         print("Loading temp %s" % (row[0]))
         get_temp(row[0])
 
-    results = execute_sql("SELECT short_name FROM eq_humidity " +
+    results = execute_sql("SELECT short_name FROM eq_rh_sensor " +
                           "ORDER BY short_name ")
     for row in results:
-        print("Loading humidity %s" % (row[0]))
-        get_humidity(row[0])
+        print("Loading rh_sensor %s" % (row[0]))
+        get_rh_sensor(row[0])
 
 
 def get(type, id):
@@ -68,8 +68,8 @@ def get_temps():
 
 
 # Ok I have to change this plural thing here later.
-def get_humiditys():
-    return humiditys
+def get_rh_sensors():
+    return rh_sensors
 
 
 def get_vent(id):
@@ -122,16 +122,16 @@ def get_temp(id):
     return res
 
 
-def get_humidity(id):
-    if (id in humiditys):
-        return humiditys[id]
+def get_rh_sensor(id):
+    if (id in rh_sensors):
+        return rh_sensors[id]
 
-    results = execute_sql("SELECT full_name, short_name, humidity_io_uri " +
-                          " FROM eq_humidity " +
+    results = execute_sql("SELECT full_name, short_name, rh_sensor_io_uri " +
+                          " FROM eq_rh_sensor " +
                           "WHERE short_name = '%s'" % id)
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
-        res = Humidity(row[0], row[1], row[2])
+        res = RHSensor(row[0], row[1], row[2])
 
-    humiditys[id] = res
+    rh_sensors[id] = res
     return res

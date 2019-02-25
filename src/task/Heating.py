@@ -45,12 +45,13 @@ class Heating(BaseTask):
     def _action(self, doit):
         ret_val = False
         temp = self.temp_sensor.get_temp()
+        status = self.heat1.is_on
         # Some ugly debug code below
         print("HEATING task for {} using {} is:".format("HEAT01", "TEMP01"))
         print("... on at {} off at {} "
               "currently {} deg status: {}".format(self.on_at,
                                                    self.off_at,
-                                                   temp, self.heat1.is_on))
+                                                   temp, status))
         """
         print("temp: " + str(temp))
         print("heat1 on at: " + str(self.on_at))
@@ -58,13 +59,13 @@ class Heating(BaseTask):
         print("heat1 is currently: " + str(self.heat1.is_on))
         """
 
-        if (temp <= self.on_at):
+        if (temp <= self.on_at and status is False):
             print("We want to turn heat on.")
             ret_val = True
             if doit:
                 print("And we're trying to turn it on now.")
                 self.heat1.set_on()
-        if (temp >= self.off_at):
+        if (temp >= self.off_at and status is True):
             print("We want to turn heat off.")
             ret_val = True
             if doit:

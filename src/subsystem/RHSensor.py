@@ -5,7 +5,7 @@ import requests
 from .BaseSubsystem import BaseSubsystem
 
 
-class Humidity(BaseSubsystem):
+class RHSensor(BaseSubsystem):
     def __init__(self, long_name, short_name, io_uri):
         self.long_name = long_name
         self.short_name = short_name

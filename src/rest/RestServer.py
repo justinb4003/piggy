@@ -19,7 +19,7 @@ def get_all():
     _eq['vents'] = {}
     _eq['heaters'] = {}
     _eq['temps'] = {}
-    _eq['humiditys'] = {}
+    _eq['rh_sensors'] = {}
 
     for id, vent in eqfetch.get_vents().items():
         _eq['vents'][id] = vent.export_dict()
@@ -30,8 +30,8 @@ def get_all():
     for id, temp in eqfetch.get_temps().items():
         _eq['temps'][id] = temp.export_dict()
 
-    for id, humidity in eqfetch.get_humiditys().items():
-        _eq['humiditys'][id] = humidity.export_dict()
+    for id, rh_sensor in eqfetch.get_rh_sensors().items():
+        _eq['rh_sensors'][id] = rh_sensor.export_dict()
 
     data['running_tasks'] = {}
     _rt = data['running_tasks']
