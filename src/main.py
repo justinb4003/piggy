@@ -6,7 +6,6 @@ import rest.RestServer as rs
 import schedule.Scheduler as shd
 import schedule.TaskRunner as tr
 import remote.Controller as rmc
-import monitor.Monitor as mon
 
 from threading import Thread
 
@@ -36,16 +35,6 @@ def controller_loop():
         print("got command:",  str(raw_command))
 
 
-def monitor_loop():
-    """
-    Something that runs constantly updating a display or maybe more.
-    Not sure yet. This is probably a dead end.
-    """
-    while True:
-        mon.execute()
-        time.sleep(5.0)
-
-
 def rest_loop():
     """Loop to start up a REST server that kicks back JSON status data"""
     rs.serve_forever()
@@ -60,9 +49,6 @@ def start_threads():
 
     controller_thread = Thread(target=controller_loop)
     controller_thread.start()
-
-    monitor_thread = Thread(target=monitor_loop)
-    monitor_thread.start()
 
     rest_thread = Thread(target=rest_loop)
     rest_thread.start()
