@@ -14,6 +14,7 @@ rh_sensors = {}
 
 
 def execute_sql(sql):
+    # TODO: Yeah some kind of error handling might be a good idea.
     db = pymysql.connect("localhost", "piggy", "oinkoink", "ircon")
     cursor = db.cursor()
     cursor.execute(sql)
@@ -67,7 +68,6 @@ def get_temps():
     return temps
 
 
-# Ok I have to change this plural thing here later.
 def get_rh_sensors():
     return rh_sensors
 
@@ -82,12 +82,7 @@ def get_vent(id):
                           "WHERE short_name = '%s'" % id)
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
-        res = Vent(row[0],
-                   row[1],
-                   row[2],
-                   row[3],
-                   row[4])
-
+        res = Vent(row[0], row[1], row[2], row[3], row[4])
     vents[id] = res
     return res
 
