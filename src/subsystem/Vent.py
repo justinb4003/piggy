@@ -42,7 +42,7 @@ class Vent(BaseSubsystem):
                round(self.get_percent(), 1))
 
     def set_close(self):
-        if (self.is_closing is False):
+        if (self.can_move()):
             self.start_runtime = time.time()
             self.is_closing = True
             print("{} set to closing.".format(self.short_name))
@@ -50,7 +50,7 @@ class Vent(BaseSubsystem):
             pass
 
     def set_open(self):
-        if (self.is_opening is False):
+        if (self.can_move()):
             self.start_runtime = time.time()
             self.is_opening = True
             print("{} set to opening.".format(self.short_name))
@@ -95,13 +95,15 @@ class Vent(BaseSubsystem):
     def can_move(self):
         # Internal rules to see if the vent can move.
         # for now it's just the timeout.  30 seconds between movements.
+        now = time.time()
         if self.is_closing:
-            print("Can't move vent, it is currently closing.")
+            print("no: closing ", end='', flush=True)
             return False
         if self.is_opening:
-            print("Can't move vent, it is currently opening.")
+            print("no: opening ", end='', flush=True)
             return False
-        if time.time() - self.last_moved_at < 30:
-            print("Can't move vent, is hasn't hit it's 30 second timeout.")
+        if now - self.last_moved_at < 30:
+            rem = 30 - (now - self.last_moved_at)
+            print("no: {}s left ".format(rem))
             return False
         return True  # yay we made it!
