@@ -45,6 +45,7 @@ class Vent(BaseSubsystem):
         if (self.is_closing is False):
             self.start_runtime = time.time()
             self.is_closing = True
+            print("{} set to closing.".format(self.short_name))
             # do the actual io
             pass
 
@@ -52,6 +53,7 @@ class Vent(BaseSubsystem):
         if (self.is_opening is False):
             self.start_runtime = time.time()
             self.is_opening = True
+            print("{} set to opening.".format(self.short_name))
             # do the actual io
             pass
 
@@ -63,8 +65,8 @@ class Vent(BaseSubsystem):
 
         if (self.is_closing):
             new_pct = self.curr_pct - frac*100.0
-            if (self.is_opening):
-                new_pct = self.curr_pct + frac*100.0
+        if (self.is_opening):
+            new_pct = self.curr_pct + frac*100.0
 
         return new_pct
 
@@ -78,21 +80,28 @@ class Vent(BaseSubsystem):
             self.curr_pct = 100
 
         print("STOPPING VENTS!")
+
         if (self.is_closing and self.is_opening):
             print("Somehow this vent was both opening and " +
                   "closing which is bad.")
-            self.is_closing = False
-            self.is_opening = False
-            self.start_runtime = 0
-            self.last_moved_at = time.time()
-            # do the actual io
-            pass
+
+        self.is_closing = False
+        self.is_opening = False
+        self.start_runtime = 0
+        self.last_moved_at = time.time()
+        # do the actual io
+        pass
 
     def can_move(self):
         # Internal rules to see if the vent can move.
         # for now it's just the timeout.  30 seconds between movements.
-        return (self.is_closing is False
-                and
-                self.is_opening is False
-                and
-                time.time() - self.last_moved_at >= 30)
+        if self.is_closing:
+            print("Can't move vent, it is currently closing.")
+            return False
+        if self.is_opening:
+            print("Can't move vent, it is currently opening.")
+            return False
+        if time.time() - self.last_moved_at < 30:
+            print("Can't move vent, is hasn't hit it's 30 second timeout.")
+            return False
+        return True  # yay we made it!
