@@ -1,7 +1,5 @@
-#!/usr/bin/python3
 # vim: ai ts=4 sw=4 expandtab softtabstop=4 filetype=python
 
-# Ugh... gotta make sure I keep this all DT safe and what not.
 import time
 from .BaseSubsystem import BaseSubsystem
 
