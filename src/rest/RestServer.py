@@ -18,8 +18,10 @@ def get_all():
     _eq = data['equipment']
     _eq['vents'] = {}
     _eq['heaters'] = {}
+    _eq['curtains'] = {}
     _eq['temps'] = {}
     _eq['rh_sensors'] = {}
+    _eq['sun_sensors'] = {}
 
     for id, vent in eqfetch.get_vents().items():
         _eq['vents'][id] = vent.export_dict()
@@ -27,11 +29,17 @@ def get_all():
     for id, heater in eqfetch.get_heaters().items():
         _eq['heaters'][id] = heater.export_dict()
 
+    for id, curtain in eqfetch.get_curtains().items():
+        _eq['curtains'][id] = curtain.export_dict()
+
     for id, temp in eqfetch.get_temps().items():
         _eq['temps'][id] = temp.export_dict()
 
     for id, rh_sensor in eqfetch.get_rh_sensors().items():
         _eq['rh_sensors'][id] = rh_sensor.export_dict()
+
+    for id, sun_sensor in eqfetch.get_sun_sensors().items():
+        _eq['sun_sensors'][id] = sun_sensor.export_dict()
 
     data['running_tasks'] = {}
     _rt = data['running_tasks']

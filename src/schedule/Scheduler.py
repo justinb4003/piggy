@@ -25,7 +25,7 @@ def execute():
 
     for c in immediate_command_list:
         cmdExCount += 1
-        print(type(c))
+        # print(type(c))
         c.execute()
         if c.isFinished():
             c.end()
@@ -34,6 +34,7 @@ def execute():
     if len(seq_command_list) > 0:
         cmdExCount += 1
         c = seq_command_list[0]
+        # print(type(c))
         c.execute()
         if c.is_finished():
             c.end()

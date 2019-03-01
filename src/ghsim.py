@@ -13,15 +13,11 @@ from threading import Thread
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, GLib
 
-DB_HOST = "localhost"
-DB_USER = "root"
-DB_PASS = "nothing"
-DB_SCHM = "ircon"
-
 HTTP_PORT = 9900
 
 current_temp = 99.0
 current_rh = 110.0
+current_sun = 50
 
 
 def http_server_loop():
@@ -46,9 +42,12 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             data['temp'] = current_temp
         elif self.path.endswith("humidity"):
             data['humidity'] = current_rh
+        elif self.path.endswith("sun"):
+            data['sun'] = current_sun
         elif self.path.endswith("all"):
             data['humidity'] = current_rh
             data['temp'] = current_temp
+            data['sun'] = current_sun
         else:
             data['unknown'] = self.path
 
@@ -65,6 +64,7 @@ class GHSimWindow(Gtk.ApplicationWindow):
 
         temp_adj = Gtk.Adjustment(72, -20, 120, 1, 1, 1)
         humidity_adj = Gtk.Adjustment(30, 0, 100, 1, 1, 1)
+        sun_adj = Gtk.Adjustment(50, 0, 100, 1, 1, 1)
 
         self.temp_scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL,
                                     adjustment=temp_adj)
@@ -86,12 +86,24 @@ class GHSimWindow(Gtk.ApplicationWindow):
         self.humidity_label = Gtk.Label()
         self.humidity_label.set_text("Set Humidity...")
 
+        self.sun_scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL,
+                                   adjustment=sun_adj)
+        self.sun_scale.set_digits(1)
+        self.sun_scale.set_hexpand(True)
+        self.sun_scale.set_valign(Gtk.Align.START)
+        self.sun_scale.connect("value-changed", self.sun_scale_moved)
+
+        self.sun_label = Gtk.Label()
+        self.sun_label.set_text("Set Sun...")
+
         grid = Gtk.Grid()
         grid.set_column_spacing(10)
-        grid.attach(self.temp_label, 0, 0, 1, 1)
-        grid.attach(self.temp_scale, 0, 1, 1, 1)
+        grid.attach(self.temp_label,     0, 0, 1, 1)
+        grid.attach(self.temp_scale,     0, 1, 1, 1)
         grid.attach(self.humidity_label, 0, 2, 1, 1)
         grid.attach(self.humidity_scale, 0, 3, 1, 1)
+        grid.attach(self.sun_label,      0, 4, 1, 1)
+        grid.attach(self.sun_scale,      0, 5, 1, 1)
 
         self.add(grid)
 
@@ -102,6 +114,10 @@ class GHSimWindow(Gtk.ApplicationWindow):
     def humidity_scale_moved(self, event):
         global current_rh
         current_rh = self.humidity_scale.get_value()
+
+    def sun_scale_moved(self, event):
+        global current_sun
+        current_sun = self.sun_scale.get_value()
 
 
 class GHSimApplication(Gtk.Application):

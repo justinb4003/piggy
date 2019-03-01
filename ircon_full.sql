@@ -64,6 +64,34 @@ INSERT INTO `controller_type` VALUES ('b1fe29e5-e5c2-11e8-9e76-30e37a141928','Be
 UNLOCK TABLES;
 
 --
+-- Table structure for table `eq_curtain`
+--
+
+DROP TABLE IF EXISTS `eq_curtain`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `eq_curtain` (
+  `curtain_id` varchar(36) NOT NULL,
+  `full_name` varchar(255) DEFAULT NULL,
+  `short_name` varchar(64) DEFAULT NULL,
+  `close_io_uri` varchar(255) DEFAULT NULL,
+  `open_io_uri` varchar(255) DEFAULT NULL,
+  `stroke_seconds` int(11) DEFAULT NULL,
+  PRIMARY KEY (`curtain_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `eq_curtain`
+--
+
+LOCK TABLES `eq_curtain` WRITE;
+/*!40000 ALTER TABLE `eq_curtain` DISABLE KEYS */;
+INSERT INTO `eq_curtain` VALUES ('40aa5bc2-3bca-11e9-ae2a-0d3d0b7f5e59','Retail Shade Curtain','RETSHADE','gpio://5','gpio://6',280);
+/*!40000 ALTER TABLE `eq_curtain` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `eq_heater`
 --
 
@@ -111,8 +139,34 @@ CREATE TABLE `eq_rh_sensor` (
 
 LOCK TABLES `eq_rh_sensor` WRITE;
 /*!40000 ALTER TABLE `eq_rh_sensor` DISABLE KEYS */;
-INSERT INTO `eq_rh_sensor` VALUES ('b19cbbff-ea15-11e8-9e76-30e37a141928','RH Zone 01','RH01','http://192.168.1.22:9900/humidity'),('b6e9b939-ea15-11e8-9e76-30e37a141928','RH Zone 02','RH02','http://192.168.1.22:9900/humidity');
+INSERT INTO `eq_rh_sensor` VALUES ('b19cbbff-ea15-11e8-9e76-30e37a141928','RH Zone 01','RH01','http://localhost:9900/humidity'),('b6e9b939-ea15-11e8-9e76-30e37a141928','RH Zone 02','RH02','http://localhost:9900/humidity');
 /*!40000 ALTER TABLE `eq_rh_sensor` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `eq_sun_sensor`
+--
+
+DROP TABLE IF EXISTS `eq_sun_sensor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `eq_sun_sensor` (
+  `sun_id` varchar(36) NOT NULL,
+  `full_name` varchar(255) DEFAULT NULL,
+  `short_name` varchar(64) DEFAULT NULL,
+  `sun_io_uri` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`sun_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `eq_sun_sensor`
+--
+
+LOCK TABLES `eq_sun_sensor` WRITE;
+/*!40000 ALTER TABLE `eq_sun_sensor` DISABLE KEYS */;
+INSERT INTO `eq_sun_sensor` VALUES ('840afb77-3bc8-11e9-ae2a-0d3d0b7f5e59','Outdoor Light Sensor','SUN','http://localhost:9900/sun');
+/*!40000 ALTER TABLE `eq_sun_sensor` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -137,7 +191,7 @@ CREATE TABLE `eq_temp` (
 
 LOCK TABLES `eq_temp` WRITE;
 /*!40000 ALTER TABLE `eq_temp` DISABLE KEYS */;
-INSERT INTO `eq_temp` VALUES ('97bc9d74-ea15-11e8-9e76-30e37a141928','Temp Zone 01','TEMP01','http://192.168.1.22:9900/temp'),('a01f1219-ea15-11e8-9e76-30e37a141928','Temp Zone 02','TEMP02','http://192.168.1.22:9900/temp');
+INSERT INTO `eq_temp` VALUES ('97bc9d74-ea15-11e8-9e76-30e37a141928','Temp Zone 01','TEMP01','http://localhost:9900/temp'),('a01f1219-ea15-11e8-9e76-30e37a141928','Temp Zone 02','TEMP02','http://localhost:9900/temp');
 /*!40000 ALTER TABLE `eq_temp` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -251,4 +305,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-02-24 21:41:36
+-- Dump completed on 2019-02-28 21:47:34
