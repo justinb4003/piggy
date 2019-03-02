@@ -71,23 +71,20 @@ def execute():
 
         # Now we figure out who gets to actually play with what...
         taken_eq = []
-        for key in run_queue.keys():
+        for pri, rt in run_queue.items():
             print("Priority {} task {} wants..."
-                  "".format(key, run_queue[key][0].name))
-            eq_list = run_queue[key][1]
-            for e in eq_list:
+                  "".format(pri, rt[0].name))
+            for e in rt[1]:
                 print(e)
                 if e in taken_eq:
                     print("Can't have it though.  Taken.")
-                    run_queue[key][1].remove(e)
+                    rt[1].remove(e)
                 else:
                     taken_eq.append(e)
 
         # Now that we've ripped out equipment from the run_queue if a higher
         # priority task already took it...
-        for key in run_queue.keys():
-            # Yeah I gotta work on my pythoning a bit here.  This is gross
-            # but I'm having too much fun just getting it working tonight.
-            print("RUN: task {} with eq: {}".format(run_queue[key][0].name,
-                                                    run_queue[key][1]))
-            run_queue[key][0].take_action(run_queue[key][1])
+        # We run the things!
+        for pri, rt in run_queue.items():
+            print("RUN: task {} with eq: {}".format(rt[0].name, rt[1]))
+            rt[0].take_action(rt[1])
