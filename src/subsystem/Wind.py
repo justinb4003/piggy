@@ -6,7 +6,10 @@ import requests
 from .BaseSubsystem import BaseSubsystem
 
 
-class Sun(BaseSubsystem):
+class Wind(BaseSubsystem):
+    wind_speed = 0
+    wind_compass = 'NW'
+
     def __init__(self, long_name, short_name, io_uri):
         self.long_name = long_name
         self.short_name = short_name
@@ -20,23 +23,33 @@ class Sun(BaseSubsystem):
     def export_dict(self):
         data = {}
         data['long_name'] = self.long_name
-        data['current_sun'] = self.get_sun()
+        data['current_wind'] = self.get_wind()
 
     def print_status(self):
         print(self.get_status())
 
     def get_status(self):
-        return(self.short_name + " currently: " +
-               str(round(self.get_sun(), 0)))
+        return "{} currently {}mph from {}".format(self.short_name,
+                                                   self.get_wind_speed(),
+                                                   self.get_wind_compass())
 
-    # TODO: This needs some serious error handling.
-    # Break it out into some shared function.
-    def get_sun(self):
-        # print("getting sun from url: " + self.io_uri)
+    # Much like all the other sensor tasks these need some caching work
+    def get_wind_speed(self):
+        self.get_wind()
+        return self.wind_speed
+
+    def get_wind_compass(self):
+        self.get_wind()
+        return self.wind_compass
+
+    def get_wind(self):
+        # print("getting wind from url: " + self.io_uri)
         try:
             r = requests.get(self.io_uri)
             data = json.loads(r.content.decode('utf-8'))
             # print("return data: " + str(data))
-            return data['sun']
+            wind_speed = data['wind_speed']
+            wind_direction = 'N'
         except requests.exceptions.ConnectionError:
             return None
+        return (wind_speed, wind_direction)

@@ -1,6 +1,8 @@
 from threading import Lock
 from task.Heating import Heating
 from task.Cooling import Cooling
+from task.Shading import Shading
+from task.WindLimits import WindLimits
 
 task_lock = Lock()
 task_list = []
@@ -16,7 +18,9 @@ def export_dict():
 def create_obj(obj_name):
     classes = {
         'Heating': Heating,
-        'Cooling': Cooling
+        'Cooling': Cooling,
+        'Shading': Shading,
+        'WindLimits': WindLimits
     }
     return classes[obj_name]
 
@@ -30,10 +34,10 @@ def load_tasks():
     """
     with task_lock:
         task_list.clear()
-        task = create_obj("Heating")('Basic Heating', 1)
-        task_list.append(task)
-        task2 = create_obj("Cooling")('Basic Cooling', 8)
-        task_list.append(task2)
+        task_list.append(create_obj("WindLimits")('Storm Protection', -1000))
+        task_list.append(create_obj("Heating")('Basic Heating', 10))
+        task_list.append(create_obj("Cooling")('Basic Cooling', 20))
+        task_list.append(create_obj("Shading")('Dumb Shading', 30))
 
 
 def execute():
@@ -44,12 +48,46 @@ def execute():
     something like 30-60 seconds.
     """
     with task_lock:
-        blah = 1
+        run_queue = {}
         for task in task_list:
-            # want = task.want_action()
-            # print("Does {} want to run? {}".format(task.name, want))
-            # TODO: Resolve conflicts between tasks that wants to utilize
-            # the same equipment at the same time.
-            # For now we'll just let every action do it's thing immediately
-            task.take_action()
-    pass
+            # I know it looks stupid to have a different method
+            # to return priority here when want_action could just do it all
+            # and be cleaner.
+            # The reason is, and this isn't going to happen in grenhouse
+            # environmental control, is you might want to avoid calling
+            # a possibly expensive want_action if we're in an situation
+            # where we need to spare computing time.  Think obstacle avoidance
+            # where you might not care about monitoring battery level because
+            # you're not going to break off to recharge until the minor
+            # emergency is over.
+            # So you could say any task under 100 is an emergency and when
+            # they need action anything under 1000 cut off.
+            # Ok so that's a long explanation for my stupid looking code.
+            # Good talk everybody.
+            p = task.get_priority()
+            want, eq_wanted = task.want_action()
+            if want:
+                run_queue[p] = (task, eq_wanted)
+
+        # Now we figure out who gets to actually play with what...
+        taken_eq = []
+        for key in run_queue.keys():
+            print("Priority {} task {} wants..."
+                  "".format(key, run_queue[key][0].name))
+            eq_list = run_queue[key][1]
+            for e in eq_list:
+                print(e)
+                if e in taken_eq:
+                    print("Can't have it though.  Taken.")
+                    run_queue[key][1].remove(e)
+                else:
+                    taken_eq.append(e)
+
+        # Now that we've ripped out equipment from the run_queue if a higher
+        # priority task already took it...
+        for key in run_queue.keys():
+            # Yeah I gotta work on my pythoning a bit here.  This is gross
+            # but I'm having too much fun just getting it working tonight.
+            print("RUN: task {} with eq: {}".format(run_queue[key][0].name,
+                                                    run_queue[key][1]))
+            run_queue[key][0].take_action(run_queue[key][1])

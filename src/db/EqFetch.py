@@ -5,6 +5,7 @@ import pymysql
 from subsystem.Vent import Vent
 from subsystem.Temp import Temp
 from subsystem.Sun import Sun
+from subsystem.Wind import Wind
 from subsystem.RHSensor import RHSensor
 from subsystem.Heater import Heater
 
@@ -14,6 +15,7 @@ curtains = {}
 temps = {}
 rh_sensors = {}
 sun_sensors = {}
+wind_sensors = {}
 
 
 def execute_sql(sql):
@@ -63,6 +65,12 @@ def load_all():
         print("Loading sun_sensor %s" % (row[0]))
         get_sun_sensor(row[0])
 
+    results = execute_sql("SELECT short_name FROM eq_wind_sensor " +
+                          "ORDER BY short_name ")
+    for row in results:
+        print("Loading wind_sensor %s" % (row[0]))
+        get_wind_sensor(row[0])
+
 
 def get_vents():
     return vents
@@ -88,6 +96,10 @@ def get_sun_sensors():
     return sun_sensors
 
 
+def get_wind_sensors():
+    return wind_sensors
+
+
 def get_vent(id):
     if (id in vents):
         return vents[id]
@@ -99,6 +111,7 @@ def get_vent(id):
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
         res = Vent(row[0], row[1], row[2], row[3], row[4])
+
     vents[id] = res
     return res
 
@@ -175,4 +188,19 @@ def get_sun_sensor(id):
         res = Sun(row[0], row[1], row[2])
 
     sun_sensors[id] = res
+    return res
+
+
+def get_wind_sensor(id):
+    if (id in wind_sensors):
+        return wind_sensors[id]
+
+    results = execute_sql("SELECT full_name, short_name, wind_io_uri " +
+                          " FROM eq_wind_sensor " +
+                          "WHERE short_name = '%s'" % id)
+    for row in results:
+        print("full = %s and short = %s" % (row[0], row[1]))
+        res = Wind(row[0], row[1], row[2])
+
+    wind_sensors[id] = res
     return res

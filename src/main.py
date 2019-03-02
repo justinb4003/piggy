@@ -47,7 +47,7 @@ def task_loop():
         tr.execute()
         # 5 second sleep is WAY too fast for real life but nice for
         # testing.
-        time.sleep(5)
+        time.sleep(60)
 
 
 # We'll let the controller loop stop the scheduler, insert commands, etc.

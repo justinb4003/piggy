@@ -9,17 +9,16 @@ class Heating(BaseTask):
 
     on_at = 68
     off_at = 72
-    priority = 1
 
     def __init__(self, name, priority):
         self.name = name
         self.priority = priority
 
-    def take_action(self):
-        return self._action(True)
+    def take_action(self, eq_cleared):
+        return self._action(True, eq_cleared)
 
     def want_action(self):
-        return self._action(False)
+        return self._action(False, None)
 
     def get_priority(self):
         return self.priority
@@ -42,8 +41,9 @@ class Heating(BaseTask):
     def import_json_config(self):
         pass
 
-    def _action(self, doit):
+    def _action(self, doit, eq_cleared):
         ret_val = False
+        eq_wanted = []
         temp = self.temp_sensor.get_temp()
         status = self.heat1.is_on
         # Some ugly debug code below
@@ -62,13 +62,17 @@ class Heating(BaseTask):
         if (temp <= self.on_at and status is False):
             print("We want to turn heat on.")
             ret_val = True
-            if doit:
+            eq_wanted.append(self.heat1.short_name)
+            if doit and self.heat1.short_name in eq_cleared:
                 print("And we're trying to turn it on now.")
                 self.heat1.set_on()
+
         if (temp >= self.off_at and status is True):
             print("We want to turn heat off.")
             ret_val = True
-            if doit:
+            eq_wanted.append(self.heat1.short_name)
+            if doit and self.heat1.short_name in eq_cleared:
                 print("And we're trying to turn it off now.")
                 self.heat1.set_off()
-        return ret_val
+
+        return ret_val, eq_wanted

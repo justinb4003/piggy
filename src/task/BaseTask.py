@@ -14,10 +14,15 @@ class BaseTask(ABC):
     def export_json_config(self):
         pass
 
+    # Accepts a tuple of equipment allowed the task is allowed to maninpulate.
+    # If the list of cleared equipment is not everything the task wanted
+    # it will be up to the task to decide if partially proceeding works.
     @abstractmethod
-    def take_action(self):
+    def take_action(self, eq_cleared):
         pass
 
+    # Returns true or false then a list of equipment the task needs to
+    # manipulate to carry out the action
     @abstractmethod
     def want_action(self):
         pass

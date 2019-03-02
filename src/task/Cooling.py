@@ -19,14 +19,14 @@ class Cooling(BaseTask):
         self.name = name
         self.priority = priority
 
-    def take_action(self):
-        return self._action(True)
+    def take_action(self, eq_cleared):
+        return self._action(True, eq_cleared)
 
     def want_action(self):
-        return self._action(False)
+        return self._action(False, None)
 
     def get_priority(self):
-        return 0
+        return self.priority
 
     def export_dict(self):
         d = {}
@@ -45,16 +45,19 @@ class Cooling(BaseTask):
     def import_json_config(self):
         pass
 
-    def _action(self, doit):
+    def _action(self, doit, eq_cleared):
         ret_val = False
+        eq_wanted = []
         temp = self.temp_sensor.get_temp()
         pct = self.vent1.get_percent()
         vent = self.vent1
+        """
         print("COOLING:")
         print("on at: " + str(self.on_at))
         print("off at: " + str(self.off_at))
         print("temp: " + str(temp))
         print("vent1 is currently: " + str(pct))
+        """
 
         new_pct = pct
         if temp >= self.on_at and pct <= 0:
@@ -65,10 +68,15 @@ class Cooling(BaseTask):
             # If we need to open but we're already partly open we just move
             # up another 'step'
             new_pct = pct + self.step
+
+        """
+        I'm going to stop doing this in the Cooling task. This is more of a
+        safety check that belongs elsewhere.
         if temp <= self.off_at:
             # If our temp dropped below the off point we slam them shut
             # pronto.
             new_pct = -1
+        """
 
         # THINK: Is this where we should be checking if a subsystem can
         # actually take a command?  I'm not sure who's job that should be.
@@ -91,10 +99,13 @@ class Cooling(BaseTask):
             new_pct = pct
 
         if new_pct != pct:
-            print("Setting vents to new percent: {}".format(str(new_pct)))
-            vtp = VentToPercent()
-            vtp.set_vent(vent)
-            vtp.set_target(new_pct)
-            shd.add_sequential(vtp)
+            ret_val = True
+            eq_wanted.append(self.vent1.short_name)
+            if doit is True and self.vent1.short_name in eq_cleared:
+                print("Setting vents to new percent: {}".format(str(new_pct)))
+                vtp = VentToPercent()
+                vtp.set_vent(vent)
+                vtp.set_target(new_pct)
+                shd.add_sequential(vtp)
 
-        return ret_val
+        return ret_val, eq_wanted

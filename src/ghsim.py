@@ -18,6 +18,8 @@ HTTP_PORT = 9900
 current_temp = 99.0
 current_rh = 110.0
 current_sun = 50
+current_wind = 5
+current_wind_compass = 'N'
 
 
 def http_server_loop():
@@ -44,10 +46,15 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             data['humidity'] = current_rh
         elif self.path.endswith("sun"):
             data['sun'] = current_sun
+        elif self.path.endswith("wind"):
+            data['wind_speed'] = current_wind
+            data['wind_compass'] = current_wind_compass
         elif self.path.endswith("all"):
             data['humidity'] = current_rh
             data['temp'] = current_temp
             data['sun'] = current_sun
+            data['wind_speed'] = current_wind
+            data['wind_compass'] = current_wind_compass
         else:
             data['unknown'] = self.path
 
@@ -65,6 +72,7 @@ class GHSimWindow(Gtk.ApplicationWindow):
         temp_adj = Gtk.Adjustment(72, -20, 120, 1, 1, 1)
         humidity_adj = Gtk.Adjustment(30, 0, 100, 1, 1, 1)
         sun_adj = Gtk.Adjustment(50, 0, 100, 1, 1, 1)
+        wind_adj = Gtk.Adjustment(5, 0, 80, 1, 1, 1)
 
         self.temp_scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL,
                                     adjustment=temp_adj)
@@ -96,6 +104,16 @@ class GHSimWindow(Gtk.ApplicationWindow):
         self.sun_label = Gtk.Label()
         self.sun_label.set_text("Set Sun...")
 
+        self.wind_scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL,
+                                    adjustment=wind_adj)
+        self.wind_scale.set_digits(1)
+        self.wind_scale.set_hexpand(True)
+        self.wind_scale.set_valign(Gtk.Align.START)
+        self.wind_scale.connect("value-changed", self.wind_scale_moved)
+
+        self.wind_label = Gtk.Label()
+        self.wind_label.set_text("Wind")
+
         grid = Gtk.Grid()
         grid.set_column_spacing(10)
         grid.attach(self.temp_label,     0, 0, 1, 1)
@@ -104,6 +122,8 @@ class GHSimWindow(Gtk.ApplicationWindow):
         grid.attach(self.humidity_scale, 0, 3, 1, 1)
         grid.attach(self.sun_label,      0, 4, 1, 1)
         grid.attach(self.sun_scale,      0, 5, 1, 1)
+        grid.attach(self.wind_label,     0, 6, 1, 1)
+        grid.attach(self.wind_scale,     0, 7, 1, 1)
 
         self.add(grid)
 
@@ -118,6 +138,10 @@ class GHSimWindow(Gtk.ApplicationWindow):
     def sun_scale_moved(self, event):
         global current_sun
         current_sun = self.sun_scale.get_value()
+
+    def wind_scale_moved(self, event):
+        global current_wind
+        current_wind = self.wind_scale.get_value()
 
 
 class GHSimApplication(Gtk.Application):
