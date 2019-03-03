@@ -7,6 +7,8 @@ from .BaseSubsystem import BaseSubsystem
 
 
 class Sun(BaseSubsystem):
+    sun = None
+
     def __init__(self, long_name, short_name, io_uri):
         self.long_name = long_name
         self.short_name = short_name
@@ -29,14 +31,17 @@ class Sun(BaseSubsystem):
         return(self.short_name + " currently: " +
                str(round(self.get_sun(), 0)))
 
-    # TODO: This needs some serious error handling.
-    # Break it out into some shared function.
-    def get_sun(self):
+    def _refresh_value(self):
         # print("getting sun from url: " + self.io_uri)
         try:
             r = requests.get(self.io_uri)
             data = json.loads(r.content.decode('utf-8'))
             # print("return data: " + str(data))
-            return data['sun']
+            self.sun = data['sun']
         except requests.exceptions.ConnectionError:
-            return None
+            self.sun = None
+
+    # TODO: This needs some serious error handling.
+    # Break it out into some shared function.
+    def get_sun(self):
+        return self.sun

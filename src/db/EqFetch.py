@@ -2,16 +2,18 @@
 
 import pymysql
 
+from subsystem.Heater import Heater
 from subsystem.Vent import Vent
+from subsystem.Curtain import Curtain
 from subsystem.Temp import Temp
 from subsystem.Sun import Sun
 from subsystem.Wind import Wind
 from subsystem.RHSensor import RHSensor
-from subsystem.Heater import Heater
 
 vents = {}
 heaters = {}
 curtains = {}
+
 temps = {}
 rh_sensors = {}
 sun_sensors = {}
@@ -70,6 +72,13 @@ def load_all():
     for row in results:
         print("Loading wind_sensor %s" % (row[0]))
         get_wind_sensor(row[0])
+
+
+def get_all_sensors():
+    return (list(temps.items()) +
+            list(rh_sensors.items()) +
+            list(wind_sensors.items()) +
+            list(sun_sensors.items()))
 
 
 def get_vents():
@@ -141,7 +150,7 @@ def get_curtain(id):
                           "WHERE short_name = '%s'" % id)
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
-        res = Vent(row[0], row[1], row[2], row[3], row[4])
+        res = Curtain(row[0], row[1], row[2], row[3], row[4])
     curtains[id] = res
     return res
 

@@ -33,23 +33,23 @@ class Wind(BaseSubsystem):
                                                    self.get_wind_speed(),
                                                    self.get_wind_compass())
 
-    # Much like all the other sensor tasks these need some caching work
     def get_wind_speed(self):
-        self.get_wind()
         return self.wind_speed
 
     def get_wind_compass(self):
-        self.get_wind()
         return self.wind_compass
 
-    def get_wind(self):
+    def _refresh_value(self):
         # print("getting wind from url: " + self.io_uri)
         try:
             r = requests.get(self.io_uri)
             data = json.loads(r.content.decode('utf-8'))
             # print("return data: " + str(data))
-            wind_speed = data['wind_speed']
-            wind_direction = 'N'
+            self.wind_speed = data['wind_speed']
+            self.wind_compass = 'N'
         except requests.exceptions.ConnectionError:
-            return None
-        return (wind_speed, wind_direction)
+            self.wind_speed = None
+            self.wind_compass = None
+
+    def get_wind(self):
+        return (self.wind_speed, self.wind_compass)

@@ -1,4 +1,5 @@
 from threading import Lock
+# TODO: Figure out dynamic imports
 from task.Heating import Heating
 from task.Cooling import Cooling
 from task.Shading import Shading
@@ -16,6 +17,7 @@ def export_dict():
 
 
 def create_obj(obj_name):
+    # TODO: Also create this dynamically from the filesystem.
     classes = {
         'Heating': Heating,
         'Cooling': Cooling,

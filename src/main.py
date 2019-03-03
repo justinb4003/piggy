@@ -5,6 +5,7 @@ import db.EqFetch as eqfetch
 import rest.RestServer as rs
 import schedule.Scheduler as shd
 import schedule.TaskRunner as tr
+import schedule.SensorTickle as tickler
 import remote.Controller as rmc
 
 from threading import Thread
@@ -19,6 +20,7 @@ def scheduler_loop():
     time should issue a Command that can go into the scheduler.
     """
     while True:
+        tickler.execute()
         shd.execute()
         time.sleep(0.10)
 
@@ -49,6 +51,17 @@ def task_loop():
         # testing.
         time.sleep(60)
 
+def sensor_loop():
+    """
+    We're going to force a refresh on our sensors via a schedule instead of
+    trying to do the I/O when something queries it.
+    For now it's just a really simple delay loop and it'll bang through
+    every sensor.  In the future this could get far more complex.
+    """
+    while True:
+        tickler.execute()
+        time.sleep(1)
+
 
 # We'll let the controller loop stop the scheduler, insert commands, etc.
 # It'll have a wide berth in what it can do instead of making the scheduler
@@ -75,6 +88,9 @@ def start_threads():
     task_thread = Thread(target=task_loop)
     task_thread.start()
 
+    sensor_thread = Thread(target=sensor_loop)
+    sensor_thread.start()
+
     controller_thread = Thread(target=controller_loop)
     controller_thread.start()
 
@@ -84,5 +100,12 @@ def start_threads():
 
 # Load all equipment from database
 eqfetch.load_all()
+
+# Bang on every sensor in the system once before we get going.  That'll
+# let us load up default or initial values and we're also forcing all of
+# that code to execute immediately on start.  Trap any errors and deal with
+# them.
+tickler.execute()
+
 # Fire up all of our worker threads
 start_threads()

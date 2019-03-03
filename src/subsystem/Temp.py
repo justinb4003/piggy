@@ -4,9 +4,13 @@ import json
 import requests
 
 from .BaseSubsystem import BaseSubsystem
+from .BaseSensor import BaseSensor
 
 
-class Temp(BaseSubsystem):
+class Temp(BaseSubsystem, BaseSensor):
+
+    current_temp = None
+
     def __init__(self, long_name, short_name, io_uri):
         self.long_name = long_name
         self.short_name = short_name
@@ -29,14 +33,16 @@ class Temp(BaseSubsystem):
         return(self.short_name + " currently: " +
                str(round(self.get_temp(), 1)))
 
-    # TODO: This needs some serious error handling.
-    # Break it out into some shared function.
-    def get_temp(self):
+    def _refresh_value(self):
         # print("getting temp from url: " + self.io_uri)
         try:
             r = requests.get(self.io_uri)
             data = json.loads(r.content.decode('utf-8'))
             # print("return data: " + str(data))
-            return data['temp']
+            self.current_temp = data['temp']
         except requests.exceptions.ConnectionError:
-            return None
+            self.current_temp = None
+        return self.current_temp
+
+    def get_temp(self):
+        return self.current_temp
