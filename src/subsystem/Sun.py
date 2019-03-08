@@ -2,6 +2,7 @@
 
 import json
 import requests
+import aiohttp
 
 from .BaseSubsystem import BaseSubsystem
 
@@ -30,6 +31,13 @@ class Sun(BaseSubsystem):
     def get_status(self):
         return(self.short_name + " currently: " +
                str(round(self.get_sun(), 0)))
+
+    async def _arefresh_value(self):
+        async with aiohttp.ClientSession() as sess:
+            async with sess.get(self.io_uri) as r:
+                body = await r.text()
+                data = json.loads(body)
+                self.current_sun = data['sun']
 
     def _refresh_value(self):
         # print("getting sun from url: " + self.io_uri)

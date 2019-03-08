@@ -2,6 +2,7 @@
 
 import json
 import requests
+import aiohttp
 
 from .BaseSubsystem import BaseSubsystem
 
@@ -38,6 +39,14 @@ class Wind(BaseSubsystem):
 
     def get_wind_compass(self):
         return self.wind_compass
+
+    async def _arefresh_value(self):
+        async with aiohttp.ClientSession() as sess:
+            async with sess.get(self.io_uri) as r:
+                body = await r.text()
+                data = json.loads(body)
+                self.wind_speed = data['wind_speed']
+                self.wind_compass = 'N'
 
     def _refresh_value(self):
         # print("getting wind from url: " + self.io_uri)
