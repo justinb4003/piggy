@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from .BaseSubsystem import BaseSubsystem
 
 # TODO: Wow this needs to be brought up to speed w/ new development.
