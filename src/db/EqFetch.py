@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import pymysql
 
 from subsystem.Heater import Heater
