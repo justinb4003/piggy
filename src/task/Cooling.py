@@ -59,6 +59,9 @@ class Cooling(BaseTask):
         print("vent1 is currently: " + str(pct))
         """
 
+        if temp is None:
+            return False, None
+
         new_pct = pct
         if temp >= self.on_at and pct <= 0:
             # If we need to open but it's the first move we only go the
@@ -99,6 +102,8 @@ class Cooling(BaseTask):
             new_pct = pct
 
         if new_pct != pct:
+            # Round it off so we're not hitting a goofy target like 11.38282
+            new_pct = round(new_pct, 0)
             ret_val = True
             eq_wanted.append(self.vent1.short_name)
             if doit is True and self.vent1.short_name in eq_cleared:
