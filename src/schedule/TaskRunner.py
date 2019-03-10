@@ -1,9 +1,6 @@
+import importlib
+import inspect
 from threading import Lock
-# TODO: Figure out dynamic imports
-from task.Heating import Heating
-from task.Cooling import Cooling
-from task.Shading import Shading
-from task.WindLimits import WindLimits
 
 task_lock = Lock()
 task_list = []
@@ -17,13 +14,14 @@ def export_dict():
 
 
 def create_obj(obj_name):
-    # TODO: Also create this dynamically from the filesystem.
-    classes = {
-        'Heating': Heating,
-        'Cooling': Cooling,
-        'Shading': Shading,
-        'WindLimits': WindLimits
-    }
+    # TODO: Load tasks from the DB, but at least we're dynamically
+    # creating them now.
+    classes = {}
+    for task_name in ['Heating', 'Cooling', 'Shading', 'WindLimits']:
+        mod = importlib.import_module("task.{}".format(task_name))
+        members = dict(inspect.getmembers(mod))
+        classes[task_name] = members[task_name]
+
     return classes[obj_name]
 
 
@@ -74,8 +72,7 @@ def execute():
         # Now we figure out who gets to actually play with what...
         taken_eq = []
         for pri, rt in run_queue.items():
-            print("Priority {} task {} wants..."
-                  "".format(pri, rt[0].name))
+            print("Priority {} task {} wants...".format(pri, rt[0].name))
             for e in rt[1]:
                 print(e)
                 if e in taken_eq:
