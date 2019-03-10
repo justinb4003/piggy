@@ -16,13 +16,9 @@ def export_dict():
 def create_obj(obj_name):
     # TODO: Load tasks from the DB, but at least we're dynamically
     # creating them now.
-    classes = {}
-    for task_name in ['Heating', 'Cooling', 'Shading', 'WindLimits']:
-        mod = importlib.import_module("task.{}".format(task_name))
-        members = dict(inspect.getmembers(mod))
-        classes[task_name] = members[task_name]
-
-    return classes[obj_name]
+    mod = importlib.import_module("task.{}".format(obj_name))
+    members = dict(inspect.getmembers(mod))
+    return members[obj_name]
 
 
 def load_tasks():
