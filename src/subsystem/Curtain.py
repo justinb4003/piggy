@@ -81,7 +81,7 @@ class Curtain(BaseSubsystem):
         if self.curr_pct > 100:
             self.curr_pct = 100
 
-        print("STOPPING VENTS!")
+        print("STOPPING CURTAIN")
 
         if (self.is_closing and self.is_opening):
             print("Somehow this curtain was both opening and " +
