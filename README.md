@@ -1,5 +1,36 @@
 # PIGGY
-Pi Greenhouse Growing... gy. Piggy.  We're calling this project piggy.
+Pi Greenhouse Growing... Yeah, I suck at naming things. Piggy.  We're calling
+this project piggy.
+
+## Overview
+The idea is to build a full greenhouse enviornmental control system that can be
+run on a single Raspberry Pi.  Given that the simplest implementations only
+need basic relays toggled on and off to control the equipment this is certainly
+possible with a single pi and a bit of simple wiring of the GPIO pins to a
+relay board and getting some sensors for temperature, humidity, sun, wind, etc.
+wired in.
+
+Currently the focus isn't on the actual IO itself, but rather getting the
+platform built in a manner that's as extensible as possible without being
+absurd.  
+
+The dependency on MySQL/MariaDB currently looks absurd because we're just
+putting some basic equipment definitions in there.  Long term this will hold a
+lot more runtime configuration as well as an extensive logging system.
+
+There's also no reason this has to run on a pi at all.  If you don't need the
+GPIO pins anything will do.  Obviously we're targetting Linux here but you
+could probably run in under Windows if you really felt like it. Heck, the
+engine could be on a VM in a rack that just makes calls out to a Pi running a
+simple HTTP server like we do internally in this project, just to handle the
+IO.  Or, more likely, there's a slew of relay boards out there with HTTP
+interfaces already.  Just call out to them.
+
+Integrating existing sensors could be done similarly.  Stick a Pi out there and
+build a webservice that Piggy can easily read from.  There's also no reason 3rd
+party vendors couldn't ship sensors Piggy-capable but keep the source locked
+up.  The system intentionally reaches outside itself via HTTP calls to make it
+easy to integrate non-GPL code into the project.
 
 ## Setup
 
@@ -16,7 +47,6 @@ password: oinkoink
 
 Changing connection parameters is done, currently, in db/EqFetch.py.
 
-
 ## Runable Files
 
 * main.py: This is the main environmental control program. Basically the daemon
@@ -30,16 +60,6 @@ Changing connection parameters is done, currently, in db/EqFetch.py.
 * disp.py: Intended to be a GUI interface showing the status of the system but
   not even really started.
 
-
-## Project Breakdown
-src/ source code
-
-    db/ database specific code
-
-    command/ Any IO that needs multiple steps to it goes into a BaseCommand and
-gets managed by a scheduler
-
-    schedule/ This is where the command, sensor, and IO schedulers live
-
-    monitor/ Probably a dead section of code at this point.  It was intended to
-be a display for the system but that became an out of process deal.
+Launch the ghsim.py program before launching main.py in the default
+configuration else you'll get nothing as the system can't read from its
+sensors.
