@@ -33,9 +33,13 @@ Changing connection parameters is done, currently, in db/EqFetch.py.
 
 ## Project Breakdown
 src/ source code
-....db/ database specific code
-....command/ Any IO that needs multiple steps to it goes into a BaseCommand and
+
+    db/ database specific code
+
+    command/ Any IO that needs multiple steps to it goes into a BaseCommand and
 gets managed by a scheduler
-....schedule/ This is where the command, sensor, and IO schedulers live
-....monitor/ Probably a dead section of code at this point.  It was intended to
+
+    schedule/ This is where the command, sensor, and IO schedulers live
+
+    monitor/ Probably a dead section of code at this point.  It was intended to
 be a display for the system but that became an out of process deal.
