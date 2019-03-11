@@ -64,10 +64,53 @@ Launch the ghsim.py program before launching main.py in the default
 configuration else you'll get nothing as the system can't read from its
 sensors.
 
+## How It Works / What Currently Works
+
+The overall architecture probably won't be too foreign if you've used WPILib's
+suite for FIRST Robotics Competition.  This is very much patterened from
+experiences in working with that.
+
+We'll start with the `subsystem` directory.  Each class in here corresponds to
+a physical device implementation.  So, we have things like Vent, Heater,
+Curtain, Temp, RHSensor, etc.  Everything in here should inherent from the
+BaseSubsystem class and things that are sensor devices which need to keep the
+current value up to date also inherent from the BaseSensor class.  We'll come
+back to sensors when we get to scheduling.
+
+Next we should talk about the `command` directory.  A command is something that
+can be put in a queue for execution by the command scheduler.  The command's
+`execute()` method will get hit however frequently the command scheduler is set
+for.  Usually this will be something like every 10-20ms or 50-100 times a
+second put another way in the opposite order.  In other words expect this to
+run quickly, so don't do anything that will take time in there.  After that
+method runs the `is_finished()` method is checked.  If that returns true the
+command is done and the scheduler pulls it out of the queue.  That's a rough
+overview of how they work.
+
+From here we diverge from anything resembling WPILib.
+
+I suppose the `task` directory should be explained next.  A task is similar to
+a command in that it also goes into a queue that is run periodically but this
+queue is expected to be run slower, like maybe every 30-60 seconds in a
+greenhouse environment.  Where a command is a single-focused task trying to
+simply get a piece of equipment to a particular point a task is responsible for
+coordinating activities with the system as a whole and driving it toward those
+overall goals.  For intance if a cooling task wants to open the vents but the
+weather limit task says you can't because there's 80mph winds outside the task
+scheduler will figure that out and let them know who gets to use what piece of
+equipment.  They then use this knowledge of what they want to do vs what they
+can do and insert appropriate command objects into that queue to carry out the
+tasks.
+
+Inside the `schedule` directory we have the various schedulers.  Those are
+currently best explained just be reading their source code and looking at
+main.py.  At the current state of the projct you're going to want to tinker
+with them intimately anyway.
+
 
 ## TODO: The giant massive TODO list
 
-### IO:
+### IO
 The whole IO mechanism needs work. Currently none actually occurs becuase it's
 all simulated anyway.  Next step is to get some better simulation (V-REP is on
 the radar) but also getting something physical is probably a good idea.
@@ -92,3 +135,20 @@ feeling on Windows.  Actually I intend for the config app to be kind of
 pure web, C# deskto app, Python GTK app, whatever.  All the logic goes in the
 webservice.
 
+### Schedules
+Tasks not only need to come dynamicaly from the DB but they also need to be
+scheduled, not just by time but also sunrise/sunset offset times.
+
+### Zones
+It could take into account grouping equipment into zones so you don't use the
+wrong temp sensor for the wrong roof vent, but it's not really required by the
+system to do this.  It could run 18 zones just fine without actually being
+explicitly told to hold them in a "zone." It probably should for no other
+reason that keeping the UI easier.  Internally it doesn't even have to check if
+we're mixing zones -- leave that enforcement to the config tools.
+
+### Tasks
+Need to figure out a way for them to present an interface to a UI for a "story"
+config like: BasicHeating: Turn on [heater] when [temp sensor] goes below [x
+deg | x deg from setpoint] and leave on for at least [M] minutes. Turn off same
+heater when same temp sensor gets above [x deg | x deg from setpoint].
