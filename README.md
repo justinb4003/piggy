@@ -63,3 +63,32 @@ Changing connection parameters is done, currently, in db/EqFetch.py.
 Launch the ghsim.py program before launching main.py in the default
 configuration else you'll get nothing as the system can't read from its
 sensors.
+
+
+## TODO: The giant massive TODO list
+
+### IO:
+The whole IO mechanism needs work. Currently none actually occurs becuase it's
+all simulated anyway.  Next step is to get some better simulation (V-REP is on
+the radar) but also getting something physical is probably a good idea.
+
+The whole mechanism in the DB where I try and define io is going to go away.
+Something far more extensible is needed, but I'm not there yet.
+
+### Configuration
+It still needs an interface into the DB for configuring equipment, tasks,
+schedules, etc.  Everything is still hardcoded.
+
+The plan there is to make a Python WSGI app that can either be hosted in-app
+(like we already do with bottle for the REST interface) but also something that
+you could deploy on Apache on a more suitable server, perhaps something
+publically available on the net for central control.  Either way it'll
+basically just expose the config options via JSON and also take JSON back to
+update them.  From there we just make a simple GUI app that can bang on that
+webservice to get it all done.  That should help make the app pretty portable
+and I'm currently leading toward WinForms C# for that one just so it's natural
+feeling on Windows.  Actually I intend for the config app to be kind of
+"disposable" where you can pick and choose from many different ideas.  Mobile,
+pure web, C# deskto app, Python GTK app, whatever.  All the logic goes in the
+webservice.
+
