@@ -34,16 +34,15 @@ easy to integrate non-GPL code into the project.
 
 ## Setup
 
-There's going to be a whole bunch of python deps to pull in before this will
-run but I do not have a requirements.txt built yet.  You'll have to figure it
-out as you go.
+If I have my requirements.txt built right you should be able to install all the project deps with:
+pip3 install -r src/requirements.txt
 
 The ircon_full.sql file contains a sample MySQL/MariaDB database dump.  Loading
 this will create some basic equipment and sensors that point right back to the
-URLs that the stock simulator currently uses.  By default the system wants to connect to:
-database: ircon
-username: piggy
-password: oinkoink
+URLs that the stock simulator currently uses.  By default the system wants to connect to:  
+database: ircon  
+username: piggy  
+password: oinkoink  
 
 Changing connection parameters is done, currently, in db/EqFetch.py.
 
