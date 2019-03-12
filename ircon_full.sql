@@ -224,6 +224,32 @@ INSERT INTO `eq_vent` VALUES ('1a45bedf-e969-11e8-9e76-30e37a141928','Production
 UNLOCK TABLES;
 
 --
+-- Table structure for table `eq_wind_sensor`
+--
+
+DROP TABLE IF EXISTS `eq_wind_sensor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `eq_wind_sensor` (
+  `wind_id` varchar(36) NOT NULL,
+  `full_name` varchar(255) DEFAULT NULL,
+  `short_name` varchar(64) DEFAULT NULL,
+  `wind_io_uri` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`wind_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `eq_wind_sensor`
+--
+
+LOCK TABLES `eq_wind_sensor` WRITE;
+/*!40000 ALTER TABLE `eq_wind_sensor` DISABLE KEYS */;
+INSERT INTO `eq_wind_sensor` VALUES ('3ba57571-3c97-11e9-ae2a-0d3d0b7f5e59','Wind','WIND','http://localhost:9900/wind');
+/*!40000 ALTER TABLE `eq_wind_sensor` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `grower`
 --
 
@@ -305,4 +331,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-02-28 21:47:34
+-- Dump completed on 2019-03-11 21:20:32
