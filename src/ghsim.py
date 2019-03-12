@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # install deps with:
 # sudo apt install python-gi python-gi-cairo python3-gi python3-gi-cairo
