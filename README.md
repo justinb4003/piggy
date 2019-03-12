@@ -34,29 +34,31 @@ easy to integrate non-GPL code into the project.
 
 ## Setup
 
-If I have my requirements.txt built right you should be able to install all the project deps with:
-pip3 install -r src/requirements.txt
+If I have my requirements.txt built right you should be able to install all the
+project deps with:
+`pip3 install -r src/requirements.txt`
 
 The ircon_full.sql file contains a sample MySQL/MariaDB database dump.  Loading
 this will create some basic equipment and sensors that point right back to the
-URLs that the stock simulator currently uses.  By default the system wants to connect to:  
+URLs that the stock simulator currently uses.  By default the system wants to
+connect to:  
 database: ircon  
 username: piggy  
 password: oinkoink  
 
-Changing connection parameters is done, currently, in db/EqFetch.py.
+Changing connection parameters is done, currently, in `db/EqFetch.py`.
 
 ## Runable Files
 
-* main.py: This is the main environmental control program. Basically the daemon
+* `main.py`: This is the main environmental control program. Basically the daemon
   of the system.
 
-* ghsim.py: A very basic simulator for greenhouse sensors.  Intended to be
+* `ghsim.py`: A very basic simulator for greenhouse sensors.  Intended to be
   something more sophisticated later.
 
-* clidisp.py: A command line interface to showing the status of the system.
+* `clidisp.py`: A command line interface to showing the status of the system.
 
-* disp.py: Intended to be a GUI interface showing the status of the system but
+* `disp.py`: Intended to be a GUI interface showing the status of the system but
   not even really started.
 
 Launch the ghsim.py program before launching main.py in the default
