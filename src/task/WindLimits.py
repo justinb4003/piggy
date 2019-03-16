@@ -2,11 +2,13 @@ import db.EqFetch as eqfetch
 import schedule.Scheduler as shd
 
 from .BaseTask import BaseTask
+from .TaskUnconfiguredError import TaskUnconfiguredError
 from command.VentToPercent import VentToPercent
 
 
 class WindLimits(BaseTask):
 
+    """
     wind = eqfetch.get_wind_sensor("WIND")
     vent1 = eqfetch.get_vent("RETROOF")
     vent2 = eqfetch.get_vent("PRODROOF1")
@@ -14,10 +16,10 @@ class WindLimits(BaseTask):
     # Keeping it simple for now with just speed.  We'll get to direction
     # in a bit.
     max_wind = 15
+    """
 
-    def __init__(self, name, priority):
-        self.name = name
-        self.priority = priority
+    def __init__(self):
+        self.configured = False
 
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)
@@ -28,12 +30,26 @@ class WindLimits(BaseTask):
     def get_priority(self):
         return self.priority
 
-    def export_dict(self):
+    def set_priority(self, val):
+        self.priority = val
+
+    def import_by_dict(self, valmap):
+        self.name = str(valmap['name'])
+        self.priority = int(valmap['priority'])
+        self.vent1 = eqfetch.get_vent(valmap['vent1'])
+        self.vent2 = eqfetch.get_vent(valmap['vent2'])
+        self.wind = eqfetch.get_wind_sensor(valmap['wind_sensor'])
+        self.max_wind = int(valmap['max_wind'])
+        self.configured = True
+
+    def export_as_dict(self):
         d = {}
         d['name'] = self.name
-        d['type'] = type(self).__name__
+        d['priority'] = self.priority
+        d['vent1'] = self.vent1
+        d['vent2'] = self.vent2
+        d['wind'] = self.wind
         d['max_wind'] = self.max_wind
-        d['want_action'] = self.want_action()
         return d
 
     def export_json_config(self):
@@ -43,6 +59,8 @@ class WindLimits(BaseTask):
         pass
 
     def _action(self, doit, eq_cleared):
+        if self.configured is False:
+            raise TaskUnconfiguredError()
         ret_val = False
         eq_wanted = []
 

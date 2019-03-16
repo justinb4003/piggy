@@ -2,11 +2,13 @@ import db.EqFetch as eqfetch
 import schedule.Scheduler as shd
 
 from .BaseTask import BaseTask
+from .TaskUnconfiguredError import TaskUnconfiguredError
 from command.CurtainToPercent import CurtainToPercent
 
 
 class Shading(BaseTask):
 
+    """
     temp_sensor = eqfetch.get_temp("TEMP01")
     sun_sensor = eqfetch.get_sun_sensor("SUN")
     curtain1 = eqfetch.get_curtain("RETSHADE")
@@ -15,10 +17,14 @@ class Shading(BaseTask):
     max_shade = 50
     on_at = 90
     off_at = 75
+    """
 
-    def __init__(self, name, priority):
-        self.name = name
-        self.priority = priority
+    # Not even sure why I bother with step on this one. Might be an artifact
+    # rather than a good idea.
+    step = 10
+
+    def __init__(self):
+        self.configured = False
 
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)
@@ -29,24 +35,38 @@ class Shading(BaseTask):
     def get_priority(self):
         return self.priority
 
-    def export_dict(self):
+    def set_priority(self, val):
+        self.priority = val
+
+    def get_madlib(self):
+        return """Pull [Curtain:curtain1] to cool when [Temp:temp_sensor]
+    is over [int:on_at] degees, up to [int:max_shade]%. Pull curtain back
+    if temperature drops below [int:off_at]"""
+
+    def import_by_dict(self, valmap):
+        self.name = str(valmap['name'])
+        self.priority = int(valmap['priority'])
+        self.curtain1 = eqfetch.get_curtain(valmap['curtain1'])
+        self.temp_sensor = eqfetch.get_temp(valmap['temp_sensor'])
+        self.on_at = int(valmap['on_at'])
+        self.off_at = int(valmap['off_at'])
+        self.max_shade = int(valmap['max_shade'])
+        self.configured = True
+
+    def export_as_dict(self):
         d = {}
         d['name'] = self.name
-        d['type'] = type(self).__name__
+        d['priority'] = self.priority
+        d['curtain1'] = self.curtain1
+        d['temp_sensor'] = self.temp_sensor
         d['on_at'] = self.on_at
         d['off_at'] = self.off_at
         d['max_shade'] = self.max_shade
-        d['step]'] = self.step
-        d['want_action'] = self.want_action()
         return d
 
-    def export_json_config(self):
-        pass
-
-    def import_json_config(self):
-        pass
-
     def _action(self, doit, eq_cleared):
+        if self.configured is False:
+            raise TaskUnconfiguredError()
         ret_val = False
         temp = self.temp_sensor.get_temp()
         pct = self.curtain1.get_percent()

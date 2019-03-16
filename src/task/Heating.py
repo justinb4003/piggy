@@ -1,24 +1,20 @@
 from .BaseTask import BaseTask
+from .TaskUnconfiguredError import TaskUnconfiguredError
 import db.EqFetch as eqfetch
 
 
 class Heating(BaseTask):
 
+    """
     temp_sensor = eqfetch.get_temp("TEMP01")
     heat1 = eqfetch.get_heater("HEAT01")
 
     on_at = 68
     off_at = 72
+    """
 
-    def __init__(self, name, priority):
-        self.name = name
-        self.priority = priority
-
-    def take_action(self, eq_cleared):
-        return self._action(True, eq_cleared)
-
-    def want_action(self):
-        return self._action(False, None)
+    def __init__(self):
+        self.configured = False
 
     def get_priority(self):
         return self.priority
@@ -26,22 +22,38 @@ class Heating(BaseTask):
     def set_priority(self, val):
         self.priority = val
 
-    def export_dict(self):
+    def get_madlib(self):
+        return "Turn [Heater:heat1] on at [int:on_at] and then [int:off_at] " \
+                "according to [Temp:temp_sensor]."
+
+    def import_by_dict(self, valmap):
+        self.name = str(valmap['name'])
+        self.priority = int(valmap['priority'])
+        self.heat1 = eqfetch.get_heater(valmap['heat1'])
+        self.temp_sensor = eqfetch.get_temp(valmap['temp_sensor'])
+        self.on_at = int(valmap['on_at'])
+        self.off_at = int(valmap['off_at'])
+        self.configured = True
+
+    def export_as_dict(self):
         d = {}
         d['name'] = self.name
-        d['type'] = type(self).__name__
+        d['priority'] = self.priority
+        d['heat1'] = self.heat1
+        d['temp_sensor'] = self.temp_sensor
         d['on_at'] = self.on_at
         d['off_at'] = self.off_at
-        d['want_action'] = self.want_action()
         return d
 
-    def export_json_config(self):
-        pass
+    def take_action(self, eq_cleared):
+        return self._action(True, eq_cleared)
 
-    def import_json_config(self):
-        pass
+    def want_action(self):
+        return self._action(False, None)
 
     def _action(self, doit, eq_cleared):
+        if self.configured is False:
+            raise TaskUnconfiguredError
         ret_val = False
         eq_wanted = []
         temp = self.temp_sensor.get_temp()

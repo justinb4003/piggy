@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from .TaskUnconfiguredError import TaskUnconfiguredError
 
 
 class BaseTask(ABC):
@@ -7,11 +8,19 @@ class BaseTask(ABC):
         pass
 
     @abstractmethod
-    def import_json_config(self, jsons):
+    def get_priority(self):
         pass
 
     @abstractmethod
-    def export_json_config(self):
+    def set_priority(self):
+        pass
+
+    @abstractmethod
+    def export_as_dict(self):
+        pass
+
+    @abstractmethod
+    def import_by_dict(self, valmap):
         pass
 
     # Accepts a tuple of equipment allowed the task is allowed to maninpulate.
@@ -25,12 +34,4 @@ class BaseTask(ABC):
     # manipulate to carry out the action
     @abstractmethod
     def want_action(self):
-        pass
-
-    @abstractmethod
-    def get_priority(self):
-        pass
-
-    @abstractmethod
-    def export_dict(self):
         pass

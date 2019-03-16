@@ -2,11 +2,13 @@ import db.EqFetch as eqfetch
 import schedule.Scheduler as shd
 
 from .BaseTask import BaseTask
+from .TaskUnconfiguredError import TaskUnconfiguredError
 from command.VentToPercent import VentToPercent
 
 
 class Cooling(BaseTask):
 
+    """
     temp_sensor = eqfetch.get_temp("TEMP01")
     vent1 = eqfetch.get_vent("RETROOF")
 
@@ -14,10 +16,10 @@ class Cooling(BaseTask):
     step = 3
     on_at = 82
     off_at = 78
+    """
 
-    def __init__(self, name, priority):
-        self.name = name
-        self.priority = priority
+    def __init__(self):
+        self.configured = False
 
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)
@@ -28,24 +30,35 @@ class Cooling(BaseTask):
     def get_priority(self):
         return self.priority
 
-    def export_dict(self):
+    def set_priority(self, val):
+        self.priority = val
+
+    def import_by_dict(self, valmap):
+        self.name = str(valmap['name'])
+        self.priority = int(valmap['priority'])
+        self.vent1 = eqfetch.get_vent(valmap['vent1'])
+        self.temp_sensor = eqfetch.get_temp(valmap['temp_sensor'])
+        self.on_at = int(valmap['on_at'])
+        self.off_at = int(valmap['off_at'])
+        self.crack = int(valmap['crack'])
+        self.step = int(valmap['step'])
+        self.configured = True
+
+    def export_as_dict(self):
         d = {}
         d['name'] = self.name
-        d['type'] = type(self).__name__
+        d['priority'] = self.priority
+        d['vent1'] = self.vent1
+        d['temp_sensor'] = self.temp_sensor
         d['on_at'] = self.on_at
         d['off_at'] = self.off_at
         d['crack'] = self.crack
         d['step]'] = self.step
-        d['want_action'] = self.want_action()
         return d
 
-    def export_json_config(self):
-        pass
-
-    def import_json_config(self):
-        pass
-
     def _action(self, doit, eq_cleared):
+        if self.configured is False:
+            raise TaskUnconfiguredError
         ret_val = False
         eq_wanted = []
         temp = self.temp_sensor.get_temp()
