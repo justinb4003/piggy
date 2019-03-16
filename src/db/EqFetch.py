@@ -8,6 +8,8 @@ from subsystem.Sun import Sun
 from subsystem.Wind import Wind
 from subsystem.RHSensor import RHSensor
 
+from .EquipmentDefError import EquipmentDefError
+
 vents = {}
 heaters = {}
 curtains = {}
@@ -130,9 +132,13 @@ def get_heater(id):
     results = execute_sql("SELECT full_name, short_name, on_io_uri " +
                           " FROM eq_heater " +
                           "WHERE short_name = '%s'" % id)
+    res = None
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
         res = Heater(row[0], row[1], row[2])
+
+    if res is None:
+        raise EquipmentDefError("Heater {} is not defined.".format(id))
 
     heaters[id] = res
     return res
