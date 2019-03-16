@@ -2,23 +2,26 @@ import db.EqFetch as eqfetch
 import schedule.Scheduler as shd
 
 from .BaseTask import BaseTask
+from .TaskUnconfiguredError import TaskUnconfiguredError
 from command.CurtainToPercent import CurtainToPercent
 
 
 class Shading(BaseTask):
 
-    temp_sensor = eqfetch.get_temp("TEMP01")
-    sun_sensor = eqfetch.get_sun_sensor("SUN")
-    curtain1 = eqfetch.get_curtain("RETSHADE")
-
+    # Not even sure why I bother with step on this one. Might be an artifact
+    # rather than a good idea.
     step = 10
-    max_shade = 50
-    on_at = 90
-    off_at = 75
+    prop_map = {}
+    prop_map['name'] = str
+    prop_map['priority'] = int
+    prop_map['curtain1'] = eqfetch.get_curtain
+    prop_map['temp_sensor'] = eqfetch.get_temp
+    prop_map['on_at'] = int
+    prop_map['off_at'] = int
+    prop_map['max_shade'] = int
 
-    def __init__(self, name, priority):
-        self.name = name
-        self.priority = priority
+    def __init__(self):
+        self.configured = False
 
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)
@@ -29,24 +32,23 @@ class Shading(BaseTask):
     def get_priority(self):
         return self.priority
 
-    def export_dict(self):
-        d = {}
-        d['name'] = self.name
-        d['type'] = type(self).__name__
-        d['on_at'] = self.on_at
-        d['off_at'] = self.off_at
-        d['max_shade'] = self.max_shade
-        d['step]'] = self.step
-        d['want_action'] = self.want_action()
-        return d
+    def set_priority(self, val):
+        self.priority = val
 
-    def export_json_config(self):
-        pass
+    def get_madlib(self):
+        return """Pull [Curtain:curtain1] to cool when [Temp:temp_sensor]
+    is over [int:on_at] degees, up to [int:max_shade]%. Pull curtain back
+    if temperature drops below [int:off_at]"""
 
-    def import_json_config(self):
-        pass
+    def import_by_dict(self, valmap):
+        super().import_by_dict(valmap)
+
+    def export_as_dict(self):
+        super().export_as_dict()
 
     def _action(self, doit, eq_cleared):
+        if self.configured is False:
+            raise TaskUnconfiguredError()
         ret_val = False
         temp = self.temp_sensor.get_temp()
         pct = self.curtain1.get_percent()

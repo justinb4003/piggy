@@ -34,30 +34,31 @@ easy to integrate non-GPL code into the project.
 
 ## Setup
 
-There's going to be a whole bunch of python deps to pull in before this will
-run but I do not have a requirements.txt built yet.  You'll have to figure it
-out as you go.
+If I have my requirements.txt built right you should be able to install all the
+project deps with:
+`pip3 install -r src/requirements.txt`
 
 The ircon_full.sql file contains a sample MySQL/MariaDB database dump.  Loading
 this will create some basic equipment and sensors that point right back to the
-URLs that the stock simulator currently uses.  By default the system wants to connect to:
-database: ircon
-username: piggy
-password: oinkoink
+URLs that the stock simulator currently uses.  By default the system wants to
+connect to:  
+database: ircon  
+username: piggy  
+password: oinkoink  
 
-Changing connection parameters is done, currently, in db/EqFetch.py.
+Changing connection parameters is done, currently, in `db/EqFetch.py`.
 
 ## Runable Files
 
-* main.py: This is the main environmental control program. Basically the daemon
+* `main.py`: This is the main environmental control program. Basically the daemon
   of the system.
 
-* ghsim.py: A very basic simulator for greenhouse sensors.  Intended to be
+* `ghsim.py`: A very basic simulator for greenhouse sensors.  Intended to be
   something more sophisticated later.
 
-* clidisp.py: A command line interface to showing the status of the system.
+* `clidisp.py`: A command line interface to showing the status of the system.
 
-* disp.py: Intended to be a GUI interface showing the status of the system but
+* `disp.py`: Intended to be a GUI interface showing the status of the system but
   not even really started.
 
 Launch the ghsim.py program before launching main.py in the default
@@ -102,10 +103,27 @@ equipment.  They then use this knowledge of what they want to do vs what they
 can do and insert appropriate command objects into that queue to carry out the
 tasks.
 
-Inside the `schedule` directory we have the various schedulers.  Those are
-currently best explained just be reading their source code and looking at
-main.py.  At the current state of the projct you're going to want to tinker
-with them intimately anyway.
+Inside the `schedule` directory we have the various schedulers. There are three
+and we've already touched on two of them a little bit.  The first is
+haphazardly named 'Scheduler' -- this is the module that runs our command
+objects.  It has two simple queues in it.  If you add commanda via
+`add_immediate()` the command will start executing, possibly alongside other
+commands, immediately on the next loop, which should be around every 10-20ms.
+If the command is added to the Scheduler via `add_sequential()` it goes into a
+queue where commands are executed until completion and then the next on is run.
+
+The next one we've already touched on is TaskRunner which, surprise surprise,
+runs our task objects. In short it loops through acive tasks and calls their
+`want_action()` method which returns a tuple containing a True/False value
+indicating whether or not the task wants to do anything, and the second value
+is a list containing the short names (from the DB) of equipment it would like
+to modify. The TaskRunner then ranks tasks by priority and whichever one wins
+is allowed to use that device.  The TaskRunner will then call the
+`take_action()` method on the action passing it the list of allowed equipment.
+It is up to the task to honor this arrangement.  There is currently nothing
+preventing it from taking a "rogue" action.
+
+Lastly, at least for now, we have SensorTickle.  Its job is to keep sensor readings all up to date so that when a task or command wants to read from a sensor it doesn't have to block for the IO.  It also lets us set up a monitoring/alert system where if a sensor goes down we'll know about it even if the tasks aren't using it or smart enough to report the failure. Every sensor in the system inherits from BaseSubsystem but also BaseSensor.  The BaseSensor class forces a `_refresh_value()` method to be there.  However if SensorTickle sees a `_arefresh_value()` method on the object it'll use that as an asynchio compatiable version.  This interface/contract may change in the figure but it's working for now.
 
 
 ## TODO: The giant massive TODO list

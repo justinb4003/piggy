@@ -8,6 +8,8 @@ from subsystem.Sun import Sun
 from subsystem.Wind import Wind
 from subsystem.RHSensor import RHSensor
 
+from .EquipmentDefError import EquipmentDefError
+
 vents = {}
 heaters = {}
 curtains = {}
@@ -115,9 +117,13 @@ def get_vent(id):
                           " close_io_uri, open_io_uri, stroke_seconds " +
                           " FROM eq_vent " +
                           "WHERE short_name = '%s'" % id)
+    res = None
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
         res = Vent(row[0], row[1], row[2], row[3], row[4])
+
+    if res is None:
+        raise EquipmentDefError("Vent {} is not defined.".format(id))
 
     vents[id] = res
     return res
@@ -130,9 +136,13 @@ def get_heater(id):
     results = execute_sql("SELECT full_name, short_name, on_io_uri " +
                           " FROM eq_heater " +
                           "WHERE short_name = '%s'" % id)
+    res = None
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
         res = Heater(row[0], row[1], row[2])
+
+    if res is None:
+        raise EquipmentDefError("Heater {} is not defined.".format(id))
 
     heaters[id] = res
     return res
@@ -146,9 +156,14 @@ def get_curtain(id):
                           " close_io_uri, open_io_uri, stroke_seconds " +
                           " FROM eq_curtain " +
                           "WHERE short_name = '%s'" % id)
+    res = None
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
         res = Curtain(row[0], row[1], row[2], row[3], row[4])
+
+    if res is None:
+        raise EquipmentDefError("Curtain {} is not defined.".format(id))
+
     curtains[id] = res
     return res
 
@@ -160,9 +175,13 @@ def get_temp(id):
     results = execute_sql("SELECT full_name, short_name, temp_io_uri " +
                           " FROM eq_temp " +
                           "WHERE short_name = '%s'" % id)
+    res = None
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
         res = Temp(row[0], row[1], row[2])
+
+    if res is None:
+        raise EquipmentDefError("Temp Sensor {} is not defined.".format(id))
 
     temps[id] = res
     return res
@@ -175,9 +194,13 @@ def get_rh_sensor(id):
     results = execute_sql("SELECT full_name, short_name, rh_sensor_io_uri " +
                           " FROM eq_rh_sensor " +
                           "WHERE short_name = '%s'" % id)
+    res = None
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
         res = RHSensor(row[0], row[1], row[2])
+
+    if res is None:
+        raise EquipmentDefError("RH Sensor {} is not defined.".format(id))
 
     rh_sensors[id] = res
     return res
@@ -190,9 +213,13 @@ def get_sun_sensor(id):
     results = execute_sql("SELECT full_name, short_name, sun_io_uri " +
                           " FROM eq_sun_sensor " +
                           "WHERE short_name = '%s'" % id)
+    res = None
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
         res = Sun(row[0], row[1], row[2])
+
+    if res is None:
+        raise EquipmentDefError("Sun sensor {} is not defined.".format(id))
 
     sun_sensors[id] = res
     return res
@@ -205,9 +232,13 @@ def get_wind_sensor(id):
     results = execute_sql("SELECT full_name, short_name, wind_io_uri " +
                           " FROM eq_wind_sensor " +
                           "WHERE short_name = '%s'" % id)
+    res = None
     for row in results:
         print("full = %s and short = %s" % (row[0], row[1]))
         res = Wind(row[0], row[1], row[2])
+
+    if res is None:
+        raise EquipmentDefError("Wind sensor {} is not defined.".format(id))
 
     wind_sensors[id] = res
     return res

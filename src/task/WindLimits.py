@@ -2,22 +2,22 @@ import db.EqFetch as eqfetch
 import schedule.Scheduler as shd
 
 from .BaseTask import BaseTask
+from .TaskUnconfiguredError import TaskUnconfiguredError
 from command.VentToPercent import VentToPercent
 
 
 class WindLimits(BaseTask):
 
-    wind = eqfetch.get_wind_sensor("WIND")
-    vent1 = eqfetch.get_vent("RETROOF")
-    vent2 = eqfetch.get_vent("PRODROOF1")
+    prop_map = {}
+    prop_map['name'] = str
+    prop_map['priority'] = int
+    prop_map['vent1'] = eqfetch.get_vent
+    prop_map['vent2'] = eqfetch.get_vent
+    prop_map['wind_sensor'] = eqfetch.get_wind_sensor
+    prop_map['max_wind'] = int
 
-    # Keeping it simple for now with just speed.  We'll get to direction
-    # in a bit.
-    max_wind = 15
-
-    def __init__(self, name, priority):
-        self.name = name
-        self.priority = priority
+    def __init__(self):
+        self.configured = False
 
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)
@@ -28,25 +28,22 @@ class WindLimits(BaseTask):
     def get_priority(self):
         return self.priority
 
-    def export_dict(self):
-        d = {}
-        d['name'] = self.name
-        d['type'] = type(self).__name__
-        d['max_wind'] = self.max_wind
-        d['want_action'] = self.want_action()
-        return d
+    def set_priority(self, val):
+        self.priority = val
 
-    def export_json_config(self):
-        pass
+    def import_by_dict(self, valmap):
+        super().import_by_dict(valmap)
 
-    def import_json_config(self):
-        pass
+    def export_as_dict(self):
+        super().export_as_dict()
 
     def _action(self, doit, eq_cleared):
+        if self.configured is False:
+            raise TaskUnconfiguredError()
         ret_val = False
         eq_wanted = []
 
-        (wind_speed, wind_compass) = self.wind.get_wind()
+        (wind_speed, wind_compass) = self.wind_sensor.get_wind()
         print("Wind limits has {}mph max and current is {} mph"
               "".format(self.max_wind, wind_speed))
 

@@ -1,24 +1,20 @@
 from .BaseTask import BaseTask
+from .TaskUnconfiguredError import TaskUnconfiguredError
 import db.EqFetch as eqfetch
 
 
 class Heating(BaseTask):
 
-    temp_sensor = eqfetch.get_temp("TEMP01")
-    heat1 = eqfetch.get_heater("HEAT01")
+    prop_map = {}
+    prop_map['name'] = str
+    prop_map['priority'] = int
+    prop_map['heat1'] = eqfetch.get_heater
+    prop_map['temp_sensor'] = eqfetch.get_temp
+    prop_map['on_at'] = int
+    prop_map['off_at'] = int
 
-    on_at = 68
-    off_at = 72
-
-    def __init__(self, name, priority):
-        self.name = name
-        self.priority = priority
-
-    def take_action(self, eq_cleared):
-        return self._action(True, eq_cleared)
-
-    def want_action(self):
-        return self._action(False, None)
+    def __init__(self):
+        self.configured = False
 
     def get_priority(self):
         return self.priority
@@ -26,22 +22,25 @@ class Heating(BaseTask):
     def set_priority(self, val):
         self.priority = val
 
-    def export_dict(self):
-        d = {}
-        d['name'] = self.name
-        d['type'] = type(self).__name__
-        d['on_at'] = self.on_at
-        d['off_at'] = self.off_at
-        d['want_action'] = self.want_action()
-        return d
+    def get_madlib(self):
+        return "Turn [Heater:heat1] on at [int:on_at] and then [int:off_at] " \
+                "according to [Temp:temp_sensor]."
 
-    def export_json_config(self):
-        pass
+    def export_as_dict(self):
+        super().export_as_dict()
 
-    def import_json_config(self):
-        pass
+    def import_by_dict(self, valmap):
+        super().import_by_dict(valmap)
+
+    def take_action(self, eq_cleared):
+        return self._action(True, eq_cleared)
+
+    def want_action(self):
+        return self._action(False, None)
 
     def _action(self, doit, eq_cleared):
+        if self.configured is False:
+            raise TaskUnconfiguredError
         ret_val = False
         eq_wanted = []
         temp = self.temp_sensor.get_temp()
