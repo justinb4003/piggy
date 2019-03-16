@@ -1,6 +1,8 @@
-import importlib
+import json
 import inspect
+import importlib
 from threading import Lock
+import db.TaskFetch as taskfetch
 
 task_lock = Lock()
 task_list = []
@@ -21,70 +23,32 @@ def create_obj(obj_name):
     return members[obj_name]()
 
 
+def save_tasks():
+    # TODO: Really need to look at how we lock this.
+    with task_lock:
+        taskfetch.save_tasks(task_list)
+
+
 def load_tasks():
     """
     Pull tasks from DB and set them up to run. We want to be able to hit
     this on the fly with a running system, hence the locking.
-
-    TODO: Actually pull them from the DB.  I'm just hard-coding them in now.
     """
     with task_lock:
-        task_list.clear()
-        # task_list.append(create_obj("WindLimits")('Storm Protection', -1000))
-        heating_config = {}
-        heating_config['name'] = 'Basic Heating'
-        heating_config['priority'] = 10
-        heating_config['heat1'] = 'HEAT01'
-        heating_config['temp_sensor'] = 'TEMP01'
-        heating_config['on_at'] = 58
-        heating_config['off_at'] = 64
+        tconfig = taskfetch.get_tasks()
+        for t in tconfig:
+            print(t)
+            task_type = t['task_type']
+            # Yeah... I duplicated where I store this data.  Idiot.
+            # task_name = t['task_name']
+            # priority = t['priority']
+            json_config = t['json_config']
 
-        cooling_config = {}
-        cooling_config['name'] = 'Basic Cooling'
-        cooling_config['priority'] = 20
-        cooling_config['vent1'] = 'RETROOF'
-        cooling_config['temp_sensor'] = 'TEMP01'
-        cooling_config['on_at'] = 80
-        cooling_config['off_at'] = 60
-        cooling_config['crack'] = 10
-        cooling_config['step'] = 15
-
-        shading_config = {}
-        shading_config['name'] = 'Basic Shading'
-        shading_config['priority'] = 30
-        shading_config['curtain1'] = 'RETSHADE'
-        shading_config['temp_sensor'] = 'TEMP01'
-        shading_config['on_at'] = 90
-        shading_config['off_at'] = 60
-        shading_config['max_shade'] = 50
-
-        wl_config = {}
-        wl_config['name'] = 'Storm Protection'
-        wl_config['priority'] = -1000
-        wl_config['vent1'] = 'RETROOF'
-        wl_config['vent2'] = 'RETROOF'
-        wl_config['wind_sensor'] = 'WIND'
-        wl_config['max_wind'] = 25
-
-        task_obj = create_obj("Heating")
-        task_obj.import_by_dict(heating_config)
-        task_list.append(task_obj)
-
-        task_obj = create_obj("Cooling")
-        task_obj.import_by_dict(cooling_config)
-        task_list.append(task_obj)
-
-        task_obj = create_obj("Shading")
-        task_obj.import_by_dict(shading_config)
-        task_list.append(task_obj)
-
-        task_obj = create_obj("WindLimits")
-        task_obj.import_by_dict(wl_config)
-        task_list.append(task_obj)
-
-        # task_list.append(create_obj("Heating")('Basic Heating', 10))
-        # task_list.append(create_obj("Cooling")('Basic Cooling', 20))
-        # task_list.append(create_obj("Shading")('Dumb Shading', 30))
+            new_task = create_obj(task_type)
+            new_task.import_by_dict(json.loads(json_config))
+            task_list.append(new_task)
+            print("Created object of type {}".format(task_type))
+            print("config: {}".format(json_config))
 
 
 def execute():
