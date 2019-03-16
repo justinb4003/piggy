@@ -32,10 +32,10 @@ class WindLimits(BaseTask):
         self.priority = val
 
     def import_by_dict(self, valmap):
-        super().import_by_dict(valmap)
+        return super().import_by_dict(valmap)
 
     def export_as_dict(self):
-        super().export_as_dict()
+        return super().export_as_dict()
 
     def _action(self, doit, eq_cleared):
         if self.configured is False:

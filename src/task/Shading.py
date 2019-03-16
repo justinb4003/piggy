@@ -41,10 +41,10 @@ class Shading(BaseTask):
     if temperature drops below [int:off_at]"""
 
     def import_by_dict(self, valmap):
-        super().import_by_dict(valmap)
+        return super().import_by_dict(valmap)
 
     def export_as_dict(self):
-        super().export_as_dict()
+        return super().export_as_dict()
 
     def _action(self, doit, eq_cleared):
         if self.configured is False:
@@ -73,6 +73,7 @@ class Shading(BaseTask):
             # If our temp dropped below the off point we open it back up.
             new_pct = 0
 
+        print("Shading max is {}".format(self.max_shade))
         if new_pct > self.max_shade:
             new_pct = self.max_shade
 
@@ -81,6 +82,7 @@ class Shading(BaseTask):
             new_pct = pct
 
         if new_pct != pct:
+            print("New {} vs old {}".format(new_pct, pct))
             ret_val = True
             eq_wanted.append(self.curtain1.short_name)
             if doit and self.curtain1.short_name in eq_cleared:
