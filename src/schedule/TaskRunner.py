@@ -60,7 +60,7 @@ def execute():
     """
     with task_lock:
         run_queue = {}
-        for task in task_list:
+        for task in sorted(task_list, key=lambda task: task.get_priority()):
             # I know it looks stupid to have a different method
             # to return priority here when want_action could just do it all
             # and be cleaner.
