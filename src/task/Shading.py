@@ -60,6 +60,9 @@ class Shading(BaseTask):
         print("curtain1 is currently: " + str(pct))
         """
 
+        if temp is None:
+            return False, None
+
         new_pct = pct
         if temp >= self.on_at:
             # For now keep cranking it closed until we max out.
