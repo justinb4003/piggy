@@ -59,6 +59,9 @@ class Heating(BaseTask):
         print("heat1 is currently: " + str(self.heat1.is_on))
         """
 
+        if temp is None:
+            return False, None
+
         if (temp <= self.on_at and status is False):
             print("We want to turn heat on.")
             ret_val = True
