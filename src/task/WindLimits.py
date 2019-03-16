@@ -11,8 +11,7 @@ class WindLimits(BaseTask):
     prop_map = {}
     prop_map['name'] = str
     prop_map['priority'] = int
-    prop_map['vent1'] = eqfetch.get_vent
-    prop_map['vent2'] = eqfetch.get_vent
+    prop_map['vents'] = eqfetch.get_vent
     prop_map['wind_sensor'] = eqfetch.get_wind_sensor
     prop_map['max_wind'] = int
 
@@ -52,7 +51,7 @@ class WindLimits(BaseTask):
             # Do _not_ test for can_move() ... don't care.
             ret_val = True
 
-            for v in [self.vent1, self.vent2]:
+            for v in self.vents:
                 eq_wanted.append(v.short_name)
                 print("Want to slam vent {} 'cuz wind.".format(v.short_name))
                 if doit is True and v.short_name in eq_cleared:

@@ -16,19 +16,37 @@ class BaseTask(ABC):
 
     @abstractmethod
     def export_as_dict(self):
+        # TODO: This is ugly.
         d = {}
         for key in self.prop_map.keys():
             v = getattr(self, key)
-            if hasattr(v, 'short_name'):
-                d[key] = v.short_name
+            if (isinstance(v, list)):
+                d[key] = []
+                for o in v:
+                    ov = o
+                    if hasattr(o, 'short_name'):
+                        ov = o.short_name
+                    d[key].append(ov)
             else:
-                d[key] = v
+                if hasattr(v, 'short_name'):
+                    d[key] = v.short_name
+                else:
+                    d[key] = v
         return d
 
     @abstractmethod
     def import_by_dict(self, valmap):
+        # TODO: This is also ugly.
         for key, f in self.prop_map.items():
-            setattr(self, key, f(valmap[key]))
+            if key in valmap:
+                v = valmap[key]
+                if isinstance(v, list):
+                    newprop = []
+                    for o in v:
+                        newprop.append(f(o))
+                    setattr(self, key, newprop)
+                else:
+                    setattr(self, key, f(valmap[key]))
         self.configured = True
 
     # Accepts a tuple of equipment allowed the task is allowed to maninpulate.
