@@ -8,20 +8,17 @@ from command.CurtainToPercent import CurtainToPercent
 
 class Shading(BaseTask):
 
-    """
-    temp_sensor = eqfetch.get_temp("TEMP01")
-    sun_sensor = eqfetch.get_sun_sensor("SUN")
-    curtain1 = eqfetch.get_curtain("RETSHADE")
-
-    step = 10
-    max_shade = 50
-    on_at = 90
-    off_at = 75
-    """
-
     # Not even sure why I bother with step on this one. Might be an artifact
     # rather than a good idea.
     step = 10
+    prop_map = {}
+    prop_map['name'] = str
+    prop_map['priority'] = int
+    prop_map['curtain1'] = eqfetch.get_curtain
+    prop_map['temp_sensor'] = eqfetch.get_temp
+    prop_map['on_at'] = int
+    prop_map['off_at'] = int
+    prop_map['max_shade'] = int
 
     def __init__(self):
         self.configured = False
@@ -44,25 +41,10 @@ class Shading(BaseTask):
     if temperature drops below [int:off_at]"""
 
     def import_by_dict(self, valmap):
-        self.name = str(valmap['name'])
-        self.priority = int(valmap['priority'])
-        self.curtain1 = eqfetch.get_curtain(valmap['curtain1'])
-        self.temp_sensor = eqfetch.get_temp(valmap['temp_sensor'])
-        self.on_at = int(valmap['on_at'])
-        self.off_at = int(valmap['off_at'])
-        self.max_shade = int(valmap['max_shade'])
-        self.configured = True
+        super().import_by_dict(valmap)
 
     def export_as_dict(self):
-        d = {}
-        d['name'] = self.name
-        d['priority'] = self.priority
-        d['curtain1'] = self.curtain1
-        d['temp_sensor'] = self.temp_sensor
-        d['on_at'] = self.on_at
-        d['off_at'] = self.off_at
-        d['max_shade'] = self.max_shade
-        return d
+        super().export_as_dict()
 
     def _action(self, doit, eq_cleared):
         if self.configured is False:

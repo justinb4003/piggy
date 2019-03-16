@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from .TaskUnconfiguredError import TaskUnconfiguredError
 
 
 class BaseTask(ABC):
@@ -17,11 +16,20 @@ class BaseTask(ABC):
 
     @abstractmethod
     def export_as_dict(self):
-        pass
+        d = {}
+        for key in self.prop_map.keys():
+            v = getattr(self, key)
+            if hasattr(v, 'short_name'):
+                d[key] = v.short_name
+            else:
+                d[key] = v
+        return d
 
     @abstractmethod
     def import_by_dict(self, valmap):
-        pass
+        for key, f in self.prop_map.items():
+            setattr(self, key, f(valmap[key]))
+        self.configured = True
 
     # Accepts a tuple of equipment allowed the task is allowed to maninpulate.
     # If the list of cleared equipment is not everything the task wanted

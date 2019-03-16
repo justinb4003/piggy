@@ -8,15 +8,13 @@ from command.VentToPercent import VentToPercent
 
 class WindLimits(BaseTask):
 
-    """
-    wind = eqfetch.get_wind_sensor("WIND")
-    vent1 = eqfetch.get_vent("RETROOF")
-    vent2 = eqfetch.get_vent("PRODROOF1")
-
-    # Keeping it simple for now with just speed.  We'll get to direction
-    # in a bit.
-    max_wind = 15
-    """
+    prop_map = {}
+    prop_map['name'] = str
+    prop_map['priority'] = int
+    prop_map['vent1'] = eqfetch.get_vent
+    prop_map['vent2'] = eqfetch.get_vent
+    prop_map['wind_sensor'] = eqfetch.get_wind_sensor
+    prop_map['max_wind'] = int
 
     def __init__(self):
         self.configured = False
@@ -34,29 +32,10 @@ class WindLimits(BaseTask):
         self.priority = val
 
     def import_by_dict(self, valmap):
-        self.name = str(valmap['name'])
-        self.priority = int(valmap['priority'])
-        self.vent1 = eqfetch.get_vent(valmap['vent1'])
-        self.vent2 = eqfetch.get_vent(valmap['vent2'])
-        self.wind = eqfetch.get_wind_sensor(valmap['wind_sensor'])
-        self.max_wind = int(valmap['max_wind'])
-        self.configured = True
+        super().import_by_dict(valmap)
 
     def export_as_dict(self):
-        d = {}
-        d['name'] = self.name
-        d['priority'] = self.priority
-        d['vent1'] = self.vent1
-        d['vent2'] = self.vent2
-        d['wind'] = self.wind
-        d['max_wind'] = self.max_wind
-        return d
-
-    def export_json_config(self):
-        pass
-
-    def import_json_config(self):
-        pass
+        super().export_as_dict()
 
     def _action(self, doit, eq_cleared):
         if self.configured is False:
@@ -64,7 +43,7 @@ class WindLimits(BaseTask):
         ret_val = False
         eq_wanted = []
 
-        (wind_speed, wind_compass) = self.wind.get_wind()
+        (wind_speed, wind_compass) = self.wind_sensor.get_wind()
         print("Wind limits has {}mph max and current is {} mph"
               "".format(self.max_wind, wind_speed))
 

@@ -8,15 +8,15 @@ from command.VentToPercent import VentToPercent
 
 class Cooling(BaseTask):
 
-    """
-    temp_sensor = eqfetch.get_temp("TEMP01")
-    vent1 = eqfetch.get_vent("RETROOF")
-
-    crack = 8
-    step = 3
-    on_at = 82
-    off_at = 78
-    """
+    prop_map = {}
+    prop_map['name'] = str
+    prop_map['priority'] = int
+    prop_map['vent1'] = eqfetch.get_vent
+    prop_map['temp_sensor'] = eqfetch.get_temp
+    prop_map['on_at'] = int
+    prop_map['off_at'] = int
+    prop_map['crack'] = int
+    prop_map['step'] = int
 
     def __init__(self):
         self.configured = False
@@ -33,28 +33,11 @@ class Cooling(BaseTask):
     def set_priority(self, val):
         self.priority = val
 
-    def import_by_dict(self, valmap):
-        self.name = str(valmap['name'])
-        self.priority = int(valmap['priority'])
-        self.vent1 = eqfetch.get_vent(valmap['vent1'])
-        self.temp_sensor = eqfetch.get_temp(valmap['temp_sensor'])
-        self.on_at = int(valmap['on_at'])
-        self.off_at = int(valmap['off_at'])
-        self.crack = int(valmap['crack'])
-        self.step = int(valmap['step'])
-        self.configured = True
-
     def export_as_dict(self):
-        d = {}
-        d['name'] = self.name
-        d['priority'] = self.priority
-        d['vent1'] = self.vent1
-        d['temp_sensor'] = self.temp_sensor
-        d['on_at'] = self.on_at
-        d['off_at'] = self.off_at
-        d['crack'] = self.crack
-        d['step]'] = self.step
-        return d
+        super().export_as_dict()
+
+    def import_by_dict(self, valmap):
+        super().import_by_dict(valmap)
 
     def _action(self, doit, eq_cleared):
         if self.configured is False:

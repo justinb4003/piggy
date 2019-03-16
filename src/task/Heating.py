@@ -5,13 +5,13 @@ import db.EqFetch as eqfetch
 
 class Heating(BaseTask):
 
-    """
-    temp_sensor = eqfetch.get_temp("TEMP01")
-    heat1 = eqfetch.get_heater("HEAT01")
-
-    on_at = 68
-    off_at = 72
-    """
+    prop_map = {}
+    prop_map['name'] = str
+    prop_map['priority'] = int
+    prop_map['heat1'] = eqfetch.get_heater
+    prop_map['temp_sensor'] = eqfetch.get_temp
+    prop_map['on_at'] = int
+    prop_map['off_at'] = int
 
     def __init__(self):
         self.configured = False
@@ -26,24 +26,11 @@ class Heating(BaseTask):
         return "Turn [Heater:heat1] on at [int:on_at] and then [int:off_at] " \
                 "according to [Temp:temp_sensor]."
 
-    def import_by_dict(self, valmap):
-        self.name = str(valmap['name'])
-        self.priority = int(valmap['priority'])
-        self.heat1 = eqfetch.get_heater(valmap['heat1'])
-        self.temp_sensor = eqfetch.get_temp(valmap['temp_sensor'])
-        self.on_at = int(valmap['on_at'])
-        self.off_at = int(valmap['off_at'])
-        self.configured = True
-
     def export_as_dict(self):
-        d = {}
-        d['name'] = self.name
-        d['priority'] = self.priority
-        d['heat1'] = self.heat1
-        d['temp_sensor'] = self.temp_sensor
-        d['on_at'] = self.on_at
-        d['off_at'] = self.off_at
-        return d
+        super().export_as_dict()
+
+    def import_by_dict(self, valmap):
+        super().import_by_dict(valmap)
 
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)
