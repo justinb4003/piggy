@@ -15,9 +15,7 @@ def export_dict():
     pass
 
 
-def create_obj(obj_name):
-    # TODO: Load tasks from the DB, but at least we're dynamically
-    # creating them now.
+def _create_obj(obj_name):
     mod = importlib.import_module("task.{}".format(obj_name))
     members = dict(inspect.getmembers(mod))
     return members[obj_name]()
@@ -29,26 +27,36 @@ def save_tasks():
         taskfetch.save_tasks(task_list)
 
 
+def add_task(task_type, name, pri, json_config):
+    new_task = _create_obj(task_type)
+    # name and priority are also in the dict.
+    # weird duplication thing I was doing and I'm not sure which way I'll go.
+    # new_task.set_name(name)
+    # new_task.set_priority(pri)
+    new_task.import_by_dict(json.loads(json_config))
+
+    with task_lock:
+        task_list.append(new_task)
+
+    print("Created object of type {}".format(task_type))
+    print("config: {}".format(json_config))
+
+
 def load_tasks():
     """
     Pull tasks from DB and set them up to run. We want to be able to hit
     this on the fly with a running system, hence the locking.
     """
     with task_lock:
-        tconfig = taskfetch.get_tasks()
-        for t in tconfig:
-            print(t)
-            task_type = t['task_type']
-            # Yeah... I duplicated where I store this data.  Idiot.
-            # task_name = t['task_name']
-            # priority = t['priority']
-            json_config = t['json_config']
+        task_list.clear()
 
-            new_task = create_obj(task_type)
-            new_task.import_by_dict(json.loads(json_config))
-            task_list.append(new_task)
-            print("Created object of type {}".format(task_type))
-            print("config: {}".format(json_config))
+    tconfig = taskfetch.get_tasks()
+    for t in tconfig:
+        task_type = t['task_type']
+        task_name = t['task_name']
+        priority = t['priority']
+        json_config = t['json_config']
+        add_task(task_type, task_name, priority, json_config)
 
 
 def execute():
