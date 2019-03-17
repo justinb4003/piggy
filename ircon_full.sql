@@ -321,6 +321,33 @@ LOCK TABLES `solenoid_type` WRITE;
 /*!40000 ALTER TABLE `solenoid_type` DISABLE KEYS */;
 /*!40000 ALTER TABLE `solenoid_type` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `task_config`
+--
+
+DROP TABLE IF EXISTS `task_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `task_config` (
+  `task_config_id` varchar(36) NOT NULL,
+  `task_type` varchar(255) DEFAULT NULL,
+  `task_name` varchar(255) DEFAULT NULL,
+  `priority` int(11) DEFAULT NULL,
+  `json_config` text,
+  PRIMARY KEY (`task_config_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `task_config`
+--
+
+LOCK TABLES `task_config` WRITE;
+/*!40000 ALTER TABLE `task_config` DISABLE KEYS */;
+INSERT INTO `task_config` VALUES ('36efe91a-7c8c-46bd-9942-ed8cb766fac4','WindLimits','Storm Protection',-1000,'{\n    \"max_wind\": 25,\n    \"name\": \"Storm Protection\",\n    \"priority\": -1000,\n    \"vents\": [\n        \"RETROOF\",\n        \"PRODROOF1\"\n    ],\n    \"wind_sensor\": \"WIND\"\n}\n'),('56c7cd1e-3b48-4a04-9736-1e58c2768738','Cooling','Basic Cooling',20,'{\n    \"crack\": 10,\n    \"name\": \"Basic Cooling\",\n    \"off_at\": 60,\n    \"on_at\": 80,\n    \"priority\": 20,\n    \"step\": 15,\n    \"temp_sensor\": \"TEMP01\",\n    \"vent1\": \"RETROOF\"\n}\n'),('729fc14a-7d10-46b7-866a-e2f7c320b673','Shading','Basic Shading',30,'{\n    \"curtain1\": \"RETSHADE\",\n    \"max_shade\": 50,\n    \"name\": \"Basic Shading\",\n    \"off_at\": 60,\n    \"on_at\": 90,\n    \"priority\": 30,\n    \"temp_sensor\": \"TEMP01\"\n}\n'),('7ce9730a-70be-4cce-8b00-1e6e0eb02cbe','Heating','Basic Heating',10,'{\n    \"heat1\": \"HEAT01\",\n    \"name\": \"Basic Heating\",\n    \"off_at\": 64,\n    \"on_at\": 58,\n    \"priority\": 10,\n    \"temp_sensor\": \"TEMP01\"\n}\n');
+/*!40000 ALTER TABLE `task_config` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -331,4 +358,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-11 21:20:32
+-- Dump completed on 2019-03-17  8:02:51
