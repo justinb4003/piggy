@@ -3,7 +3,7 @@
 import requests
 
 resp = requests.get("http://localhost:9999/")
-print(resp.content)
+print(resp.content.decode('utf-8'))
 data = resp.json()
 eq = data['equipment']
 for h in eq['heaters']:
