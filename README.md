@@ -123,7 +123,16 @@ is allowed to use that device.  The TaskRunner will then call the
 It is up to the task to honor this arrangement.  There is currently nothing
 preventing it from taking a "rogue" action.
 
-Lastly, at least for now, we have SensorTickle.  Its job is to keep sensor readings all up to date so that when a task or command wants to read from a sensor it doesn't have to block for the IO.  It also lets us set up a monitoring/alert system where if a sensor goes down we'll know about it even if the tasks aren't using it or smart enough to report the failure. Every sensor in the system inherits from BaseSubsystem but also BaseSensor.  The BaseSensor class forces a `_refresh_value()` method to be there.  However if SensorTickle sees a `_arefresh_value()` method on the object it'll use that as an asynchio compatiable version.  This interface/contract may change in the figure but it's working for now.
+Lastly, at least for now, we have SensorTickle.  Its job is to keep sensor
+readings all up to date so that when a task or command wants to read from a
+sensor it doesn't have to block for the IO.  It also lets us set up a
+monitoring/alert system where if a sensor goes down we'll know about it even if
+the tasks aren't using it or smart enough to report the failure. Every sensor
+in the system inherits from BaseSubsystem but also BaseSensor.  The BaseSensor
+class forces a `_refresh_value()` method to be there.  However if SensorTickle
+sees a `_arefresh_value()` method on the object it'll use that as an asynchio
+compatiable version.  This interface/contract may change in the figure but it's
+working for now.
 
 
 ## TODO: The giant massive TODO list
@@ -137,15 +146,13 @@ The whole mechanism in the DB where I try and define io is going to go away.
 Something far more extensible is needed, but I'm not there yet.
 
 ### Configuration
-It still needs an interface into the DB for configuring equipment, tasks,
+It still needs an interface into the system for configuring equipment, tasks,
 schedules, etc.  Everything is still hardcoded.
 
-The plan there is to make a Python WSGI app that can either be hosted in-app
-(like we already do with bottle for the REST interface) but also something that
-you could deploy on Apache on a more suitable server, perhaps something
-publically available on the net for central control.  Either way it'll
-basically just expose the config options via JSON and also take JSON back to
-update them.  From there we just make a simple GUI app that can bang on that
+The internal webservice that runs the REST interface will be used to configure
+the system.  It'll be up to the main daemon to send changes back to the DB.
+It'll basically just expose the config options via JSON and also take JSON back
+to update them.  From there we just make a simple GUI app that can bang on that
 webservice to get it all done.  That should help make the app pretty portable
 and I'm currently leading toward WinForms C# for that one just so it's natural
 feeling on Windows.  Actually I intend for the config app to be kind of
