@@ -6,9 +6,6 @@ import db.EqFetch as eqfetch
 class Heating(BaseTask):
 
     prop_map = {}
-    prop_map['uuid'] = str
-    prop_map['name'] = str
-    prop_map['priority'] = int
     prop_map['heaters'] = eqfetch.get_heater
     prop_map['temp_sensor'] = eqfetch.get_temp
     prop_map['on_at'] = int

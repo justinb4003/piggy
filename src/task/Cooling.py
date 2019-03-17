@@ -9,8 +9,6 @@ from command.VentToPercent import VentToPercent
 class Cooling(BaseTask):
 
     prop_map = {}
-    prop_map['name'] = str
-    prop_map['priority'] = int
     prop_map['vent1'] = eqfetch.get_vent
     prop_map['temp_sensor'] = eqfetch.get_temp
     prop_map['on_at'] = int

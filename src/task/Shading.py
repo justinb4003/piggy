@@ -12,8 +12,6 @@ class Shading(BaseTask):
     # rather than a good idea.
     step = 10
     prop_map = {}
-    prop_map['name'] = str
-    prop_map['priority'] = int
     prop_map['curtain1'] = eqfetch.get_curtain
     prop_map['temp_sensor'] = eqfetch.get_temp
     prop_map['on_at'] = int

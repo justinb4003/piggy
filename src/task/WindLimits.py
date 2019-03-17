@@ -9,8 +9,6 @@ from command.VentToPercent import VentToPercent
 class WindLimits(BaseTask):
 
     prop_map = {}
-    prop_map['name'] = str
-    prop_map['priority'] = int
     prop_map['vents'] = eqfetch.get_vent
     prop_map['wind_sensor'] = eqfetch.get_wind_sensor
     prop_map['max_wind'] = int
