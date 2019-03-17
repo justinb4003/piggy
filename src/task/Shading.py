@@ -20,31 +20,16 @@ class Shading(BaseTask):
     prop_map['off_at'] = int
     prop_map['max_shade'] = int
 
-    def __init__(self):
-        self.configured = False
+    def get_madlib(self):
+        return """Pull [Curtain:curtain1] to cool when [Temp:temp_sensor]
+    is over [int:on_at] degees, up to [int:max_shade]%. Pull curtain back
+    if temperature drops below [int:off_at]"""
 
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)
 
     def want_action(self):
         return self._action(False, None)
-
-    def get_priority(self):
-        return self.priority
-
-    def set_priority(self, val):
-        self.priority = val
-
-    def get_madlib(self):
-        return """Pull [Curtain:curtain1] to cool when [Temp:temp_sensor]
-    is over [int:on_at] degees, up to [int:max_shade]%. Pull curtain back
-    if temperature drops below [int:off_at]"""
-
-    def import_by_dict(self, valmap):
-        return super().import_by_dict(valmap)
-
-    def export_as_dict(self):
-        return super().export_as_dict()
 
     def _action(self, doit, eq_cleared):
         if self.configured is False:

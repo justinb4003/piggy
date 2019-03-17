@@ -15,26 +15,11 @@ class WindLimits(BaseTask):
     prop_map['wind_sensor'] = eqfetch.get_wind_sensor
     prop_map['max_wind'] = int
 
-    def __init__(self):
-        self.configured = False
-
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)
 
     def want_action(self):
         return self._action(False, None)
-
-    def get_priority(self):
-        return self.priority
-
-    def set_priority(self, val):
-        self.priority = val
-
-    def import_by_dict(self, valmap):
-        return super().import_by_dict(valmap)
-
-    def export_as_dict(self):
-        return super().export_as_dict()
 
     def _action(self, doit, eq_cleared):
         if self.configured is False:

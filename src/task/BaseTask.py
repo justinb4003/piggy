@@ -3,18 +3,32 @@ from abc import ABC, abstractmethod
 
 class BaseTask(ABC):
 
+    configured = False
+    priority = 0
+    name = ''
+    uuid = ''
+
     def __init__(self):
-        pass
+        self.configured = False
 
-    @abstractmethod
+    def get_name(self):
+        return self.name
+
+    def set_name(self, val):
+        self.name = val
+
+    def get_uuid(self):
+        return self.uuid
+
+    def set_uuid(self, val):
+        self.uuid = val
+
     def get_priority(self):
-        pass
+        return self.priority
 
-    @abstractmethod
-    def set_priority(self):
-        pass
+    def set_priority(self, val):
+        self.priority = val
 
-    @abstractmethod
     def export_as_dict(self):
         # TODO: This is ugly.
         d = {}
@@ -34,7 +48,6 @@ class BaseTask(ABC):
                     d[key] = v
         return d
 
-    @abstractmethod
     def import_by_dict(self, valmap):
         # TODO: This is also ugly.
         for key, f in self.prop_map.items():
