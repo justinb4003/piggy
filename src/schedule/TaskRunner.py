@@ -68,6 +68,8 @@ def load_tasks():
 
         task_obj = create_obj("Heating")
         task_obj.import_by_dict(heating_config)
+        print("Grabbing heating export as a test.")
+        print(task_obj.export_as_dict())
         task_list.append(task_obj)
 
         task_obj = create_obj("Cooling")
