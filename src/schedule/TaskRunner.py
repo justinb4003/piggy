@@ -27,12 +27,24 @@ def save_tasks():
         taskfetch.save_tasks(task_list)
 
 
-def add_task(task_type, name, pri, json_config):
+def add_task(task_type, uuid, name, pri, json_config):
     new_task = _create_obj(task_type)
-    # name and priority are also in the dict.
-    # weird duplication thing I was doing and I'm not sure which way I'll go.
-    # new_task.set_name(name)
-    # new_task.set_priority(pri)
+    new_task.set_uuid(uuid)
+    new_task.set_name(name)
+    new_task.set_priority(pri)
+    config_dict = json.loads(json_config)
+
+    # If uuid/name/priority got stuck in the config dict then we
+    # rip them back out and honor the "top level" DB attriutes.
+    # In the figure we'll just make sure we strip them before sending to
+    # the DB, but wouldn't hurt to leave this here forever.
+    bad_keys = ['uuid', 'name', 'priority']
+    for k in bad_keys:
+        try:
+            del config_dict[k]
+        except KeyError:
+            pass
+
     new_task.import_by_dict(json.loads(json_config))
 
     with task_lock:
@@ -52,11 +64,12 @@ def load_tasks():
 
     tconfig = taskfetch.get_tasks()
     for t in tconfig:
+        uuid = t['task_config_id']
         task_type = t['task_type']
         task_name = t['task_name']
         priority = t['priority']
         json_config = t['json_config']
-        add_task(task_type, task_name, priority, json_config)
+        add_task(task_type, uuid, task_name, priority, json_config)
 
 
 def execute():

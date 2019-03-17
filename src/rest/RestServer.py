@@ -43,8 +43,12 @@ def get_all():
     _rt = data['running_tasks']
     for task in task_list:
         d = task.export_as_dict()
+        # Add in some of the top-level config options for tasks
+        d['uuid'] = task.uuid
+        d['name'] = task.name
+        d['priority'] = task.priority
         print("adding task dict to rest server: {}".format(d))
-        _rt[task.name] = d
+        _rt[task.uuid] = d
 
     return json_resp(data)
 
