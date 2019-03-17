@@ -10,6 +10,7 @@ pkg-resources==0.0.0
 PyMySQL==0.9.3
 requests==2.21.0
 ruamel.yaml==0.15.89
+SQLAlchemy==1.3.1
 typing-extensions==3.7.2
 urllib3==1.24.1
 vext==0.7.3
