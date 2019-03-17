@@ -34,10 +34,10 @@ class Cooling(BaseTask):
         self.priority = val
 
     def export_as_dict(self):
-        super().export_as_dict()
+        return super().export_as_dict()
 
     def import_by_dict(self, valmap):
-        super().import_by_dict(valmap)
+        return super().import_by_dict(valmap)
 
     def _action(self, doit, eq_cleared):
         if self.configured is False:

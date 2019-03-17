@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import json
 import db.EqFetch as eqfetch
 from schedule.TaskRunner import task_list
@@ -44,7 +42,9 @@ def get_all():
     data['running_tasks'] = {}
     _rt = data['running_tasks']
     for task in task_list:
-        _rt[task.name] = task.export_dict()
+        d = task.export_as_dict()
+        print("adding task dict to rest server: {}".format(d))
+        _rt[task.name] = d
 
     return json_resp(data)
 

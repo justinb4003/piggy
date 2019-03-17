@@ -99,13 +99,13 @@ class Curtain(BaseSubsystem):
         # for now it's just the timeout.  30 seconds between movements.
         now = time.time()
         if self.is_closing:
-            print("no: closing ", end='', flush=True)
+            # print("no: closing ", end='', flush=True)
             return False
         if self.is_opening:
-            print("no: opening ", end='', flush=True)
+            # print("no: opening ", end='', flush=True)
             return False
         if now - self.last_moved_at < 30:
-            rem = 30 - (now - self.last_moved_at)
-            print("no: {}s left ".format(rem))
+            # rem = 30 - (now - self.last_moved_at)
+            # print("no: {}s left ".format(rem))
             return False
         return True  # yay we made it!

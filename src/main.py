@@ -51,6 +51,7 @@ def task_loop():
         # testing.
         time.sleep(60)
 
+
 def sensor_loop():
     """
     We're going to force a refresh on our sensors via a schedule instead of

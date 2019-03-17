@@ -27,10 +27,10 @@ class Heating(BaseTask):
                 "according to [Temp:temp_sensor]."
 
     def export_as_dict(self):
-        super().export_as_dict()
+        return super().export_as_dict()
 
     def import_by_dict(self, valmap):
-        super().import_by_dict(valmap)
+        return super().import_by_dict(valmap)
 
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)
@@ -57,6 +57,9 @@ class Heating(BaseTask):
         print("heat1 off at: " + str(self.off_at))
         print("heat1 is currently: " + str(self.heat1.is_on))
         """
+
+        if temp is None:
+            return False, None
 
         if (temp <= self.on_at and status is False):
             print("We want to turn heat on.")
