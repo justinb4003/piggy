@@ -23,11 +23,24 @@ def _create_obj(obj_name):
 
 def save_tasks():
     # TODO: Really need to look at how we lock this.
+    global task_list
     with task_lock:
         taskfetch.save_tasks(task_list)
 
 
+def del_task(uuid):
+    new_list = []
+    global task_list
+    with task_lock:
+        # There's got to a be a nice list expression for this...
+        for t in task_list:
+            if t.uuid != uuid:
+                new_list.append(t)
+        task_list = new_list
+
+
 def add_task(task_type, uuid, name, pri, json_config):
+    global task_list
     new_task = _create_obj(task_type)
     new_task.set_uuid(uuid)
     new_task.set_name(name)
@@ -59,6 +72,7 @@ def load_tasks():
     Pull tasks from DB and set them up to run. We want to be able to hit
     this on the fly with a running system, hence the locking.
     """
+    global task_list
     with task_lock:
         task_list.clear()
 
