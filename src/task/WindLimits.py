@@ -13,6 +13,10 @@ class WindLimits(BaseTask):
     prop_map['wind_sensor'] = eqfetch.get_wind_sensor
     prop_map['max_wind'] = int
 
+    def get_madlib(self):
+        return("If the wind goes over [int:max_wind]mph slam shut the "
+               "[Vent+:vents] vents.")
+
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)
 

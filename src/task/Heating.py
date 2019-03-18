@@ -15,8 +15,8 @@ class Heating(BaseTask):
     # it'll just grow randomly. A + after the type indicates a list is
     # desired.
     def get_madlib(self):
-        return "Turn [Heater+:heaters] on at [int:on_at] and then " \
-               "[int:off_at] according to [Temp:temp_sensor]."
+        return("Turn [Heater+:heaters] on at [int:on_at] and then "
+               "[int:off_at] according to [Temp:temp_sensor].")
 
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)

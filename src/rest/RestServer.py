@@ -1,10 +1,44 @@
 import json
 import db.EqFetch as eqfetch
-from schedule.TaskRunner import task_list
+import schedule.TaskRunner as tr
 import bottle
 
 
 app = bottle.default_app()
+
+
+@app.route('/tasks/load')
+def tasks_load():
+    # Reload tasks from database
+    tr.load_tasks()
+
+
+@app.route('/tasks/save')
+def tasks_save():
+    # Save tasks back to database
+    tr.save_tasks()
+
+
+@app.route('/tasks/del/<uuid>')
+def tasks_del(uuid):
+    # tr.del_task(uuid)
+    pass
+
+
+@app.route('/tasks/add/<uuid>')
+def tasks_add(uuid):
+    # Get data from the JSON payload
+    pass
+
+
+@app.route('/tasks/running')
+def tasks_running():
+    return json_resp(get_running_tasks())
+
+
+@app.route('/tasks/avail')
+def tasks_avail():
+    return json_resp(get_avail_tasks())
 
 
 @app.route('/')
@@ -39,18 +73,26 @@ def get_all():
     for id, sun_sensor in eqfetch.get_sun_sensors().items():
         _eq['sun_sensors'][id] = sun_sensor.export_dict()
 
-    data['running_tasks'] = {}
-    _rt = data['running_tasks']
-    for task in task_list:
+    data['running_tasks'] = get_running_tasks()
+
+    return json_resp(data)
+
+
+def get_running_tasks():
+    ret = {}
+    for task in tr.get_tasks():
         d = task.export_as_dict()
         # Add in some of the top-level config options for tasks
         d['uuid'] = task.uuid
         d['name'] = task.name
         d['priority'] = task.priority
         print("adding task dict to rest server: {}".format(d))
-        _rt[task.uuid] = d
+        ret[task.uuid] = d
+    return ret
 
-    return json_resp(data)
+
+def get_avail_tasks():
+    return tr.get_avail_tasks()
 
 
 def json_resp(data):

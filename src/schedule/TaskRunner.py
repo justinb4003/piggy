@@ -72,6 +72,22 @@ def load_tasks():
         add_task(task_type, uuid, task_name, priority, json_config)
 
 
+# This should get renamed to get_running_tasks()
+def get_tasks():
+    return task_list
+
+
+def get_avail_tasks():
+    tdefs = {}
+    task_types = ['Heating', 'Cooling', 'Shading', 'WindLimits']
+    for t in task_types:
+        props = {}
+        tobj = _create_obj(t)
+        props['madlib'] = tobj.get_madlib()
+        tdefs[t] = props
+    return tdefs
+
+
 def execute():
     """
     Loop through the tasks and figure out what we need to

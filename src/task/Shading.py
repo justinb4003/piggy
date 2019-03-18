@@ -19,9 +19,9 @@ class Shading(BaseTask):
     prop_map['max_shade'] = int
 
     def get_madlib(self):
-        return """Pull [Curtain:curtain1] to cool when [Temp:temp_sensor]
-    is over [int:on_at] degees, up to [int:max_shade]%. Pull curtain back
-    if temperature drops below [int:off_at]"""
+        return("Pull [Curtain:curtain1] to cool when [Temp:temp_sensor] "
+               "is over [int:on_at] degees, up to [int:max_shade]%. Pull "
+               "curtain back if temperature drops below [int:off_at]")
 
     def take_action(self, eq_cleared):
         return self._action(True, eq_cleared)

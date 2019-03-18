@@ -62,6 +62,10 @@ class BaseTask(ABC):
                     setattr(self, key, f(valmap[key]))
         self.configured = True
 
+    @abstractmethod
+    def get_madlib(self):
+        pass
+
     # Accepts a tuple of equipment allowed the task is allowed to maninpulate.
     # If the list of cleared equipment is not everything the task wanted
     # it will be up to the task to decide if partially proceeding works.
