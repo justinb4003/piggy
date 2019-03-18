@@ -21,15 +21,19 @@ current_sun = 50
 current_wind = 5
 current_wind_compass = 'N'
 
+httpd = None
+
 
 def http_server_loop():
+    global httpd
     httpd = HTTPServer(('0.0.0.0', HTTP_PORT), HTTPRequestHandler)
     httpd.serve_forever()
 
 
-def main_quit():
-    global server_thread
-    server_thread.stop()
+def main_quit(e):
+    global httpd
+    httpd.shutdown()
+    Gtk.main_quit()
 
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
@@ -150,6 +154,7 @@ class GHSimApplication(Gtk.Application):
 
     def do_activate(self):
         win = GHSimWindow(self)
+        win.connect('destroy', main_quit)
         win.show_all()
 
     def do_startup(self):
