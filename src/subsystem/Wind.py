@@ -22,7 +22,11 @@ class Wind(BaseSubsystem):
     def export_dict(self):
         data = {}
         data['long_name'] = self.long_name
+        data['short_name'] = self.short_name
         data['current_wind'] = self.get_wind()
+        data['current_wind_speed'] = self.get_wind_speed()
+        data['current_wind_compass'] = self.get_wind_compass()
+        return data
 
     def print_status(self):
         print(self.get_status())
