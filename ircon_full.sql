@@ -1,8 +1,8 @@
--- MySQL dump 10.16  Distrib 10.1.38-MariaDB, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.16  Distrib 10.1.37-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: ircon
 -- ------------------------------------------------------
--- Server version	10.1.38-MariaDB-0ubuntu0.18.04.1
+-- Server version	10.1.37-MariaDB-0+deb9u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -345,7 +345,7 @@ CREATE TABLE `task_config` (
 
 LOCK TABLES `task_config` WRITE;
 /*!40000 ALTER TABLE `task_config` DISABLE KEYS */;
-INSERT INTO `task_config` VALUES ('36efe91a-7c8c-46bd-9942-ed8cb766fac4','WindLimits','Storm Protection',-1000,'{\n    \"max_wind\": 25,\n    \"name\": \"Storm Protection\",\n    \"priority\": -1000,\n    \"vents\": [\n        \"RETROOF\",\n        \"PRODROOF1\"\n    ],\n    \"wind_sensor\": \"WIND\"\n}\n'),('56c7cd1e-3b48-4a04-9736-1e58c2768738','Cooling','Basic Cooling',20,'{\n    \"crack\": 10,\n    \"name\": \"Basic Cooling\",\n    \"off_at\": 60,\n    \"on_at\": 80,\n    \"priority\": 20,\n    \"step\": 15,\n    \"temp_sensor\": \"TEMP01\",\n    \"vent1\": \"RETROOF\"\n}\n'),('729fc14a-7d10-46b7-866a-e2f7c320b673','Shading','Basic Shading',30,'{\n    \"curtain1\": \"RETSHADE\",\n    \"max_shade\": 50,\n    \"name\": \"Basic Shading\",\n    \"off_at\": 60,\n    \"on_at\": 90,\n    \"priority\": 30,\n    \"temp_sensor\": \"TEMP01\"\n}\n'),('7ce9730a-70be-4cce-8b00-1e6e0eb02cbe','Heating','Basic Heating',10,'{\n    \"heat1\": \"HEAT01\",\n    \"name\": \"Basic Heating\",\n    \"off_at\": 64,\n    \"on_at\": 58,\n    \"priority\": 10,\n    \"temp_sensor\": \"TEMP01\"\n}\n');
+INSERT INTO `task_config` VALUES ('0485c984-bcbe-4f67-8642-7fc14f3c0e30','Cooling','Basic Cooling',20,'{\n    \"crack\": 10,\n    \"off_at\": 60,\n    \"on_at\": 80,\n    \"step\": 15,\n    \"temp_sensor\": \"TEMP01\",\n    \"vents\": [\"RETROOF\" ]\n}\n'),('4e6e6287-b58b-4f9c-803f-fc4b43e24ad3','Shading','Basic Shading',30,'{\n    \"curtain1\": \"RETSHADE\",\n    \"max_shade\": 50,\n    \"off_at\": 60,\n    \"on_at\": 90,\n    \"temp_sensor\": \"TEMP01\"\n}\n'),('c6c40d61-4ff5-4874-8957-4781b7213554','Heating','Basic Heating',10,'{\n    \"heaters\": [\n        \"HEAT01\"\n    ],\n    \"off_at\": 64,\n    \"on_at\": 58,\n    \"temp_sensor\": \"TEMP01\"\n}\n'),('f3a20265-ded0-4c8d-ba18-bcd2b02468ff','WindLimits','Storm Protection',-1000,'{\n    \"max_wind\": 25,\n    \"vents\": [\n        \"RETROOF\",\n        \"PRODROOF1\"\n    ],\n    \"wind_sensor\": \"WIND\"\n}\n');
 /*!40000 ALTER TABLE `task_config` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -358,4 +358,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-17  8:02:51
+-- Dump completed on 2019-03-17 21:13:04
