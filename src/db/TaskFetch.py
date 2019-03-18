@@ -41,9 +41,9 @@ def save_tasks(task_list):
     for task in task_list:
         print("saving... {}".format(task))
         ins = sa.insert(task_config).values(
-                    task_config_id=get_random_uuid(),
+                    task_config_id=task.uuid,
                     task_type=type(task).__name__,
                     task_name=task.name,
                     priority=task.get_priority(),
                     json_config=to_db_json(task.export_as_dict()))
-        rp = conn.execute(ins)
+        conn.execute(ins)
