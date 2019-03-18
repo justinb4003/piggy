@@ -39,17 +39,14 @@ def task_loop():
     custom ones.  This way instead of having configuration options that your
     team has to remember you don't use, or remember not to turn on some
     features, you can simply remove them entirely.
-
-    TODO: Create a configuration interface for tasks so you can configure
-    them via a UI 'mad-lib' style.  Ie: When [temp_sensor] is over [num] deg
-    activate [heater].
     """
     tr.load_tasks()
+    # tr.save_tasks()
     while True:
         tr.execute()
         # 5 second sleep is WAY too fast for real life but nice for
         # testing.
-        time.sleep(60)
+        time.sleep(5)
 
 
 def sensor_loop():
