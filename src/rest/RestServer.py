@@ -21,11 +21,11 @@ def tasks_save():
 
 @app.route('/tasks/del/<uuid>')
 def tasks_del(uuid):
-    # tr.del_task(uuid)
+    tr.del_task(uuid)
     pass
 
 
-@app.route('/tasks/add/<uuid>')
+@app.route('/tasks/add')
 def tasks_add(uuid):
     # Get data from the JSON payload
     pass
