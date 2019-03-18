@@ -21,7 +21,9 @@ class Sun(BaseSubsystem):
     def export_dict(self):
         data = {}
         data['long_name'] = self.long_name
+        data['short_name'] = self.short_name
         data['current_sun'] = self.get_sun()
+        return data
 
     def print_status(self):
         print(self.get_status())
